@@ -351,6 +351,7 @@ export const App: React.FC = () => {
                     <EvidenceReview
                       findings={currentJob.report.findings}
                       files={currentJob.report.files}
+                      model={currentJob.report.model}
                       selectedFileId={selectedFileId}
                       onSelectEvidence={handleSelectEvidence}
                       onSelectFile={(id) => {

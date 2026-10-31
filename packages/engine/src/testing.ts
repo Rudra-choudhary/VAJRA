@@ -122,6 +122,8 @@ export const fixtureModel: ModelClient = {
   async complete({ prompt }) {
     const p = JSON.parse(prompt);
     return {
+      summary:
+        "Synthetic development fixture summary; this is not a real model result.",
       assessments: p.findings.map(
         (f: { id: string; evidence: { id: string }[] }) => ({
           findingId: f.id,

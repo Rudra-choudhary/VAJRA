@@ -190,6 +190,7 @@ export const AnalysisReportSchema = z
         id: z.string().nullable(),
         status: z.enum(["used", "failed", "not_configured"]),
         reason: z.string().optional(),
+        summary: z.string().min(1).max(1200).optional(),
       })
       .strict(),
     toolVersion: z.string(),

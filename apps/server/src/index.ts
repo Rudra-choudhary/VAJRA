@@ -12,6 +12,7 @@ import type { AnalysisJob, ApiError, WatchEntry } from "@vajra/contracts";
 
 const PORT = Number(process.env.PORT ?? 3000);
 const HOST = process.env.HOST ?? "127.0.0.1";
+const MODEL_ID = process.env.VAJRA_MODEL?.trim() || "qwen3.5:latest";
 const DB_PATH = process.env.VAJRA_DB ?? "./data/vajra.db";
 const UPLOAD_DIR = process.env.VAJRA_UPLOADS ?? "./data/uploads";
 const WORKSPACE = process.env.VAJRA_WORKSPACE ?? "./data/workspaces";
@@ -118,8 +119,14 @@ app.post("/api/analyses", async (req, reply) => {
           saveFileDetail: async (aid, detail) => {
             storage.saveFileDetail(aid, detail.file.id, detail);
           },
-          ...(process.env.VAJRA_MODEL
-            ? { model: createOllamaClient({ model: process.env.VAJRA_MODEL }) }
+          ...(MODEL_ID.toLowerCase() !== "none"
+            ? {
+                model: createOllamaClient({
+                  model: MODEL_ID,
+                  baseUrl:
+                    process.env.VAJRA_OLLAMA_URL ?? "http://127.0.0.1:11434",
+                }),
+              }
             : {}),
         },
         async (stage) => {

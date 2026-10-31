@@ -163,12 +163,34 @@ export async function analyze(
         if (modelSignal.aborted) onAbort();
       });
       const result = await Promise.race([
-        explain(findings, comparison.details, deps.model, limits, modelSignal),
+        explain(findings, comparison.details, deps.model, limits, modelSignal, {
+          artifact: { name, version },
+          source: {
+            method: source.resolution.method,
+            confidence: source.resolution.confidence,
+          },
+          coverage: {
+            totalFiles: comparison.details.length,
+            comparedFiles: comparison.details.filter(
+              (d) => d.file.status !== "skipped",
+            ).length,
+            skippedFiles: comparison.details.filter(
+              (d) => d.file.status === "skipped",
+            ).length,
+          },
+          limitations: reasons,
+          findingCounts: Object.fromEntries(
+            ["high", "medium", "low", "info"].map((severity) => [
+              severity,
+              findings.filter((finding) => finding.severity === severity).length,
+            ]),
+          ),
+        }),
         interrupted,
       ]);
       findings = result.findings;
       reasons.push(...result.limitations);
-      model = { id: deps.model.id, status: "used" };
+      model = { id: deps.model.id, status: "used", summary: result.summary };
     } catch (error) {
       signal.throwIfAborted();
       model = {

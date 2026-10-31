@@ -21,7 +21,7 @@ npm run check
 
 Start the local API with `npx tsx apps/server/src/index.ts` (defaults to `127.0.0.1:3000`). Start the web UI with `npm run dev -w apps/web`; configure its API base URL as documented by the web client. The server uses `./data/vajra.db` and `./data/uploads` by default.
 
-To enable model explanations, run a local Ollama server and set `VAJRA_MODEL` to an installed model. The recorded live smoke check used `qwen3.5:latest`; model output is optional and failures preserve deterministic findings while making the report partial.
+The server uses `qwen3.5:latest` through a local Ollama server by default. Qwen reviews selected findings with bounded file and diff context, adds a plain-language interpretation, and lists uncertainty. Rule findings and their evidence remain authoritative; Qwen cannot invent evidence locations. Install the model with `ollama pull qwen3.5:latest`. Override the model with `VAJRA_MODEL`, or set `VAJRA_MODEL=none` to disable model calls. If Ollama is unavailable, deterministic findings are retained and the report records model failure and partial status. The recorded Qwen live smoke check is a functionality check, not a quality benchmark.
 
 ## Known limitations
 

@@ -67,6 +67,9 @@ export const ExportActions: React.FC<ExportActionsProps> = ({
       `Artifact SHA-256: ${report.artifact.sha256}`,
       `Source Commit: ${report.source.commit ?? report.source.snapshotSha256 ?? "unresolved"} (${report.source.method})`,
       `Model Assessment: ${report.model.status.toUpperCase()} (${report.model.id ?? "none"})`,
+      ...(report.model.status === "used" && report.model.summary
+        ? [`${report.model.id?.toLowerCase().startsWith("qwen") ? "Qwen" : "AI"} Summary (unverified): ${report.model.summary}`]
+        : []),
     ].join("\n");
 
     navigator.clipboard.writeText(summary);
@@ -84,7 +87,7 @@ export const ExportActions: React.FC<ExportActionsProps> = ({
           onClick={handleExportJson}
           title="Download report JSON payload"
         >
-          📥 Export JSON
+          Export JSON
         </Button>
 
         <Button
@@ -94,7 +97,7 @@ export const ExportActions: React.FC<ExportActionsProps> = ({
           onClick={handleExportMarkdown}
           title="Download report Markdown document"
         >
-          📄 Export Markdown
+          Export Markdown
         </Button>
 
         <Button
@@ -103,7 +106,7 @@ export const ExportActions: React.FC<ExportActionsProps> = ({
           onClick={handleCopySummary}
           title="Copy short text summary to clipboard"
         >
-          {copiedSummary ? "✓ Copied Summary!" : "📋 Copy Summary"}
+          {copiedSummary ? "Copied" : "Copy summary"}
         </Button>
       </div>
 
