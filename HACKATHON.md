@@ -21,9 +21,14 @@ Vajra compares published npm packages with their source code, flags suspicious c
 
 ## AI models used and selection rationale
 
-Product models used at this initial commit: none. Implementation has not started, so no product model has been selected or integrated.
+### Planned open-weight product models
 
-The product will integrate an open-source or open-weight model to contextualize package/source differences and explain findings against validated evidence. Its exact model identity, runtime, and selection rationale will be recorded through a pull request once selected and verified. Meaningful model integration remains required before submission.
+| Model | Selection rationale and intended role |
+| --- | --- |
+| [Gemma](https://ai.google.dev/gemma/docs) | Open-weight model family selected for explaining package/source differences and producing readable, evidence-backed findings. Exact variant and runtime will be recorded after validation. |
+| [Qwen2.5-Coder-7B-Instruct](https://huggingface.co/Qwen/Qwen2.5-Coder-7B-Instruct) | Apache-2.0-licensed coding model selected for contextual analysis of code diffs and suspicious modifications. |
+
+These are planned model selections; neither is integrated yet. Runtime configuration and actual usage will be documented when implemented. Meaningful model integration remains required before submission.
 
 ## AI coding assistants
 
@@ -39,4 +44,4 @@ The team has declared the following models for development assistance. These nam
 | Claude Sonnet 5.5 | Module implementation, code review, and test development. |
 | Gemini 3 | Research assistance, explanation review, and documentation support. |
 
-Each pull request will disclose the models and coding assistants actually used for that change. The product's required open-source or open-weight runtime model will be selected and documented separately.
+Each pull request will disclose the models and coding assistants actually used for that change. The planned product models above are separate from development assistance; actual runtime usage will be documented after integration.
