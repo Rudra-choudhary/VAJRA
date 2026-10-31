@@ -1,0 +1,733 @@
+{
+  "scope": "Deterministic evaluation only; models disabled. Controls are real releases, injection cases are synthetic. This is not a general malware accuracy benchmark.",
+  "results": [
+    {
+      "name": "is-buffer",
+      "version": "2.0.5",
+      "variant": "original",
+      "commit": "ec4bf3415108e8971375e6717ad63dde752faebf",
+      "artifactSha256": "2cde04866539c2397671a21d79773d4b95e3a7ae6573ee106c1cd437950fc05e",
+      "sourceSha256": "199a5a98b0c7abf713f5c01c62892e1bbc1e351cc5953f1523cfeabfb184d28b",
+      "artifactUrl": "https://registry.npmjs.org/is-buffer/-/is-buffer-2.0.5.tgz",
+      "sourceUrl": "https://codeload.github.com/feross/is-buffer/tar.gz/ec4bf3415108e8971375e6717ad63dde752faebf",
+      "modifiedDigestKind": "archive",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 5,
+      "suspiciousFindings": [],
+      "durationMs": 3
+    },
+    {
+      "name": "is-buffer",
+      "version": "2.0.5",
+      "variant": "lifecycle-injection",
+      "commit": "ec4bf3415108e8971375e6717ad63dde752faebf",
+      "artifactSha256": "d5ab6158a19130a33bf41c559b034a9f9062cdbb08831428ddd6a694f23867f2",
+      "sourceSha256": "199a5a98b0c7abf713f5c01c62892e1bbc1e351cc5953f1523cfeabfb184d28b",
+      "artifactUrl": "https://registry.npmjs.org/is-buffer/-/is-buffer-2.0.5.tgz",
+      "sourceUrl": "https://codeload.github.com/feross/is-buffer/tar.gz/ec4bf3415108e8971375e6717ad63dde752faebf",
+      "modifiedDigestKind": "canonical-entry-inventory",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 8,
+      "suspiciousFindings": [
+        {
+          "ruleId": "lifecycle_change",
+          "severity": "medium",
+          "title": "Published lifecycle script differs"
+        },
+        {
+          "ruleId": "published_executable",
+          "severity": "medium",
+          "title": "Executable source exists only in package"
+        },
+        {
+          "ruleId": "introduced_execute",
+          "severity": "medium",
+          "title": "Introduced execute behavior"
+        }
+      ],
+      "durationMs": 3
+    },
+    {
+      "name": "is-buffer",
+      "version": "2.0.5",
+      "variant": "network-injection",
+      "commit": "ec4bf3415108e8971375e6717ad63dde752faebf",
+      "artifactSha256": "6de41b5bd7e178b73cc374c4d07d70b037130bc64665ed0c2c260ed7a461f69f",
+      "sourceSha256": "199a5a98b0c7abf713f5c01c62892e1bbc1e351cc5953f1523cfeabfb184d28b",
+      "artifactUrl": "https://registry.npmjs.org/is-buffer/-/is-buffer-2.0.5.tgz",
+      "sourceUrl": "https://codeload.github.com/feross/is-buffer/tar.gz/ec4bf3415108e8971375e6717ad63dde752faebf",
+      "modifiedDigestKind": "canonical-entry-inventory",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 7,
+      "suspiciousFindings": [
+        {
+          "ruleId": "introduced_network",
+          "severity": "high",
+          "title": "Introduced network behavior"
+        },
+        {
+          "ruleId": "introduced_sensitive",
+          "severity": "high",
+          "title": "Introduced sensitive behavior"
+        }
+      ],
+      "durationMs": 2
+    },
+    {
+      "name": "is-buffer",
+      "version": "2.0.5",
+      "variant": "harmless-addition",
+      "commit": "ec4bf3415108e8971375e6717ad63dde752faebf",
+      "artifactSha256": "3ffd02c01c42dc0a7d5c87af085065efe71d12aa2800305067f143aa7d739e21",
+      "sourceSha256": "199a5a98b0c7abf713f5c01c62892e1bbc1e351cc5953f1523cfeabfb184d28b",
+      "artifactUrl": "https://registry.npmjs.org/is-buffer/-/is-buffer-2.0.5.tgz",
+      "sourceUrl": "https://codeload.github.com/feross/is-buffer/tar.gz/ec4bf3415108e8971375e6717ad63dde752faebf",
+      "modifiedDigestKind": "canonical-entry-inventory",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 6,
+      "suspiciousFindings": [],
+      "durationMs": 0
+    },
+    {
+      "name": "is-even",
+      "version": "1.0.0",
+      "variant": "original",
+      "commit": "e87c060bb1c3f5353cd49c45afbe98d1a6c22b89",
+      "artifactSha256": "d77c6aeabdfb84feed20106b7533975fe68d17d1fa7969672ddf8efb2c37b60c",
+      "sourceSha256": "982412c34ca231984a3eed1828cd3062679c72592314da5c564d83ab964f9d25",
+      "artifactUrl": "https://registry.npmjs.org/is-even/-/is-even-1.0.0.tgz",
+      "sourceUrl": "https://codeload.github.com/jonschlinkert/is-even/tar.gz/e87c060bb1c3f5353cd49c45afbe98d1a6c22b89",
+      "modifiedDigestKind": "archive",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 8,
+      "suspiciousFindings": [],
+      "durationMs": 1
+    },
+    {
+      "name": "is-even",
+      "version": "1.0.0",
+      "variant": "lifecycle-injection",
+      "commit": "e87c060bb1c3f5353cd49c45afbe98d1a6c22b89",
+      "artifactSha256": "f8098445b790cb27c969a16acd3e948a22c30eefcbc43e612b6fb9447a7a530d",
+      "sourceSha256": "982412c34ca231984a3eed1828cd3062679c72592314da5c564d83ab964f9d25",
+      "artifactUrl": "https://registry.npmjs.org/is-even/-/is-even-1.0.0.tgz",
+      "sourceUrl": "https://codeload.github.com/jonschlinkert/is-even/tar.gz/e87c060bb1c3f5353cd49c45afbe98d1a6c22b89",
+      "modifiedDigestKind": "canonical-entry-inventory",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 10,
+      "suspiciousFindings": [
+        {
+          "ruleId": "lifecycle_change",
+          "severity": "medium",
+          "title": "Published lifecycle script differs"
+        },
+        {
+          "ruleId": "published_executable",
+          "severity": "medium",
+          "title": "Executable source exists only in package"
+        },
+        {
+          "ruleId": "introduced_execute",
+          "severity": "medium",
+          "title": "Introduced execute behavior"
+        }
+      ],
+      "durationMs": 1
+    },
+    {
+      "name": "is-even",
+      "version": "1.0.0",
+      "variant": "network-injection",
+      "commit": "e87c060bb1c3f5353cd49c45afbe98d1a6c22b89",
+      "artifactSha256": "b364559e0c41a20a5efc1151aa7f77fafcd0acc9d4062195ae0604eb89648b22",
+      "sourceSha256": "982412c34ca231984a3eed1828cd3062679c72592314da5c564d83ab964f9d25",
+      "artifactUrl": "https://registry.npmjs.org/is-even/-/is-even-1.0.0.tgz",
+      "sourceUrl": "https://codeload.github.com/jonschlinkert/is-even/tar.gz/e87c060bb1c3f5353cd49c45afbe98d1a6c22b89",
+      "modifiedDigestKind": "canonical-entry-inventory",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 10,
+      "suspiciousFindings": [
+        {
+          "ruleId": "introduced_network",
+          "severity": "high",
+          "title": "Introduced network behavior"
+        },
+        {
+          "ruleId": "introduced_sensitive",
+          "severity": "high",
+          "title": "Introduced sensitive behavior"
+        }
+      ],
+      "durationMs": 1
+    },
+    {
+      "name": "is-even",
+      "version": "1.0.0",
+      "variant": "harmless-addition",
+      "commit": "e87c060bb1c3f5353cd49c45afbe98d1a6c22b89",
+      "artifactSha256": "f10060c0f86f723c5da984bd23b1926539264754f7aeb092334e4f6f99923de4",
+      "sourceSha256": "982412c34ca231984a3eed1828cd3062679c72592314da5c564d83ab964f9d25",
+      "artifactUrl": "https://registry.npmjs.org/is-even/-/is-even-1.0.0.tgz",
+      "sourceUrl": "https://codeload.github.com/jonschlinkert/is-even/tar.gz/e87c060bb1c3f5353cd49c45afbe98d1a6c22b89",
+      "modifiedDigestKind": "canonical-entry-inventory",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 9,
+      "suspiciousFindings": [],
+      "durationMs": 0
+    },
+    {
+      "name": "is-number",
+      "version": "7.0.0",
+      "variant": "original",
+      "commit": "98e8ff1da1a89f93d1397a24d7413ed15421c139",
+      "artifactSha256": "7b75c1057198cf97696909a9bee176c9c5e9bcb5b03bf3ecef2f484defadd51e",
+      "sourceSha256": "4e169d1ea361d1b92907a6ab2dd6bcd781c85027858d99df1596a712aab49506",
+      "artifactUrl": "https://registry.npmjs.org/is-number/-/is-number-7.0.0.tgz",
+      "sourceUrl": "https://codeload.github.com/jonschlinkert/is-number/tar.gz/98e8ff1da1a89f93d1397a24d7413ed15421c139",
+      "modifiedDigestKind": "archive",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 11,
+      "suspiciousFindings": [],
+      "durationMs": 1
+    },
+    {
+      "name": "is-number",
+      "version": "7.0.0",
+      "variant": "lifecycle-injection",
+      "commit": "98e8ff1da1a89f93d1397a24d7413ed15421c139",
+      "artifactSha256": "55ff020edcb618b2cf40f42dc9bc76f17e031210ef63741718e3894678b657f6",
+      "sourceSha256": "4e169d1ea361d1b92907a6ab2dd6bcd781c85027858d99df1596a712aab49506",
+      "artifactUrl": "https://registry.npmjs.org/is-number/-/is-number-7.0.0.tgz",
+      "sourceUrl": "https://codeload.github.com/jonschlinkert/is-number/tar.gz/98e8ff1da1a89f93d1397a24d7413ed15421c139",
+      "modifiedDigestKind": "canonical-entry-inventory",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 14,
+      "suspiciousFindings": [
+        {
+          "ruleId": "lifecycle_change",
+          "severity": "medium",
+          "title": "Published lifecycle script differs"
+        },
+        {
+          "ruleId": "published_executable",
+          "severity": "medium",
+          "title": "Executable source exists only in package"
+        },
+        {
+          "ruleId": "introduced_execute",
+          "severity": "medium",
+          "title": "Introduced execute behavior"
+        }
+      ],
+      "durationMs": 1
+    },
+    {
+      "name": "is-number",
+      "version": "7.0.0",
+      "variant": "network-injection",
+      "commit": "98e8ff1da1a89f93d1397a24d7413ed15421c139",
+      "artifactSha256": "54941b6891ffd98300dc642ded539603ad58568efbccd9574618719340ec41e8",
+      "sourceSha256": "4e169d1ea361d1b92907a6ab2dd6bcd781c85027858d99df1596a712aab49506",
+      "artifactUrl": "https://registry.npmjs.org/is-number/-/is-number-7.0.0.tgz",
+      "sourceUrl": "https://codeload.github.com/jonschlinkert/is-number/tar.gz/98e8ff1da1a89f93d1397a24d7413ed15421c139",
+      "modifiedDigestKind": "canonical-entry-inventory",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 13,
+      "suspiciousFindings": [
+        {
+          "ruleId": "introduced_network",
+          "severity": "high",
+          "title": "Introduced network behavior"
+        },
+        {
+          "ruleId": "introduced_sensitive",
+          "severity": "high",
+          "title": "Introduced sensitive behavior"
+        }
+      ],
+      "durationMs": 1
+    },
+    {
+      "name": "is-number",
+      "version": "7.0.0",
+      "variant": "harmless-addition",
+      "commit": "98e8ff1da1a89f93d1397a24d7413ed15421c139",
+      "artifactSha256": "8b1daeb727d29229481f9a10ca7bbb8b0a712bf7ddc0f0c437e9e5d6dda1e9c6",
+      "sourceSha256": "4e169d1ea361d1b92907a6ab2dd6bcd781c85027858d99df1596a712aab49506",
+      "artifactUrl": "https://registry.npmjs.org/is-number/-/is-number-7.0.0.tgz",
+      "sourceUrl": "https://codeload.github.com/jonschlinkert/is-number/tar.gz/98e8ff1da1a89f93d1397a24d7413ed15421c139",
+      "modifiedDigestKind": "canonical-entry-inventory",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 12,
+      "suspiciousFindings": [],
+      "durationMs": 1
+    },
+    {
+      "name": "is-odd",
+      "version": "3.0.1",
+      "variant": "original",
+      "commit": "a80ee0d831a8ee69f1fad5b4673491847975eb26",
+      "artifactSha256": "13c23b3f1f3a5c146b8906e23c8e674f8e4a6ff44b77720e1d4bddb7b2caf312",
+      "sourceSha256": "9b194534ac739f29458ea8b8a69e21b202b07d94c7ccd0a6fce1936ebbe16b31",
+      "artifactUrl": "https://registry.npmjs.org/is-odd/-/is-odd-3.0.1.tgz",
+      "sourceUrl": "https://codeload.github.com/jonschlinkert/is-odd/tar.gz/a80ee0d831a8ee69f1fad5b4673491847975eb26",
+      "modifiedDigestKind": "archive",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 8,
+      "suspiciousFindings": [],
+      "durationMs": 0
+    },
+    {
+      "name": "is-odd",
+      "version": "3.0.1",
+      "variant": "lifecycle-injection",
+      "commit": "a80ee0d831a8ee69f1fad5b4673491847975eb26",
+      "artifactSha256": "005cc2cc86010f923d4f24162543233eff8f87d418a5b82ed59ca910c04c2807",
+      "sourceSha256": "9b194534ac739f29458ea8b8a69e21b202b07d94c7ccd0a6fce1936ebbe16b31",
+      "artifactUrl": "https://registry.npmjs.org/is-odd/-/is-odd-3.0.1.tgz",
+      "sourceUrl": "https://codeload.github.com/jonschlinkert/is-odd/tar.gz/a80ee0d831a8ee69f1fad5b4673491847975eb26",
+      "modifiedDigestKind": "canonical-entry-inventory",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 11,
+      "suspiciousFindings": [
+        {
+          "ruleId": "lifecycle_change",
+          "severity": "medium",
+          "title": "Published lifecycle script differs"
+        },
+        {
+          "ruleId": "published_executable",
+          "severity": "medium",
+          "title": "Executable source exists only in package"
+        },
+        {
+          "ruleId": "introduced_execute",
+          "severity": "medium",
+          "title": "Introduced execute behavior"
+        }
+      ],
+      "durationMs": 1
+    },
+    {
+      "name": "is-odd",
+      "version": "3.0.1",
+      "variant": "network-injection",
+      "commit": "a80ee0d831a8ee69f1fad5b4673491847975eb26",
+      "artifactSha256": "99658cc906c1b9350864d6b26cc9175a88cc447ea6151692d89d338ed6fb3fa2",
+      "sourceSha256": "9b194534ac739f29458ea8b8a69e21b202b07d94c7ccd0a6fce1936ebbe16b31",
+      "artifactUrl": "https://registry.npmjs.org/is-odd/-/is-odd-3.0.1.tgz",
+      "sourceUrl": "https://codeload.github.com/jonschlinkert/is-odd/tar.gz/a80ee0d831a8ee69f1fad5b4673491847975eb26",
+      "modifiedDigestKind": "canonical-entry-inventory",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 10,
+      "suspiciousFindings": [
+        {
+          "ruleId": "introduced_network",
+          "severity": "high",
+          "title": "Introduced network behavior"
+        },
+        {
+          "ruleId": "introduced_sensitive",
+          "severity": "high",
+          "title": "Introduced sensitive behavior"
+        }
+      ],
+      "durationMs": 1
+    },
+    {
+      "name": "is-odd",
+      "version": "3.0.1",
+      "variant": "harmless-addition",
+      "commit": "a80ee0d831a8ee69f1fad5b4673491847975eb26",
+      "artifactSha256": "dda39b955da9362dea13a72caf6678bce2f585bbabb2770cb19a56cd4c99bc01",
+      "sourceSha256": "9b194534ac739f29458ea8b8a69e21b202b07d94c7ccd0a6fce1936ebbe16b31",
+      "artifactUrl": "https://registry.npmjs.org/is-odd/-/is-odd-3.0.1.tgz",
+      "sourceUrl": "https://codeload.github.com/jonschlinkert/is-odd/tar.gz/a80ee0d831a8ee69f1fad5b4673491847975eb26",
+      "modifiedDigestKind": "canonical-entry-inventory",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 9,
+      "suspiciousFindings": [],
+      "durationMs": 0
+    },
+    {
+      "name": "isobject",
+      "version": "3.0.1",
+      "variant": "original",
+      "commit": "7ad1fc405d19f144a21e2bfe947fa82801baa7aa",
+      "artifactSha256": "3cc6c92b005a644c93fbc9e3eb450b6a642bbca3443cc9dcc169152961367d37",
+      "sourceSha256": "5c2604222ccdcfa276966b79d5f53fff8171d75a420a39e40953c05af0ff0890",
+      "artifactUrl": "https://registry.npmjs.org/isobject/-/isobject-3.0.1.tgz",
+      "sourceUrl": "https://codeload.github.com/jonschlinkert/isobject/tar.gz/7ad1fc405d19f144a21e2bfe947fa82801baa7aa",
+      "modifiedDigestKind": "archive",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 8,
+      "suspiciousFindings": [],
+      "durationMs": 0
+    },
+    {
+      "name": "isobject",
+      "version": "3.0.1",
+      "variant": "lifecycle-injection",
+      "commit": "7ad1fc405d19f144a21e2bfe947fa82801baa7aa",
+      "artifactSha256": "5b76bfd5d98a2dbf2b16f3666231b1ceb3e72c6b8832ceabb801c44ca0b1c185",
+      "sourceSha256": "5c2604222ccdcfa276966b79d5f53fff8171d75a420a39e40953c05af0ff0890",
+      "artifactUrl": "https://registry.npmjs.org/isobject/-/isobject-3.0.1.tgz",
+      "sourceUrl": "https://codeload.github.com/jonschlinkert/isobject/tar.gz/7ad1fc405d19f144a21e2bfe947fa82801baa7aa",
+      "modifiedDigestKind": "canonical-entry-inventory",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 11,
+      "suspiciousFindings": [
+        {
+          "ruleId": "lifecycle_change",
+          "severity": "medium",
+          "title": "Published lifecycle script differs"
+        },
+        {
+          "ruleId": "published_executable",
+          "severity": "medium",
+          "title": "Executable source exists only in package"
+        },
+        {
+          "ruleId": "introduced_execute",
+          "severity": "medium",
+          "title": "Introduced execute behavior"
+        }
+      ],
+      "durationMs": 0
+    },
+    {
+      "name": "isobject",
+      "version": "3.0.1",
+      "variant": "network-injection",
+      "commit": "7ad1fc405d19f144a21e2bfe947fa82801baa7aa",
+      "artifactSha256": "7675a216ac63fc0c28562fd9e97c5cf135ec60974e1a0b5f635e384431f94df4",
+      "sourceSha256": "5c2604222ccdcfa276966b79d5f53fff8171d75a420a39e40953c05af0ff0890",
+      "artifactUrl": "https://registry.npmjs.org/isobject/-/isobject-3.0.1.tgz",
+      "sourceUrl": "https://codeload.github.com/jonschlinkert/isobject/tar.gz/7ad1fc405d19f144a21e2bfe947fa82801baa7aa",
+      "modifiedDigestKind": "canonical-entry-inventory",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 10,
+      "suspiciousFindings": [
+        {
+          "ruleId": "introduced_network",
+          "severity": "high",
+          "title": "Introduced network behavior"
+        },
+        {
+          "ruleId": "introduced_sensitive",
+          "severity": "high",
+          "title": "Introduced sensitive behavior"
+        }
+      ],
+      "durationMs": 1
+    },
+    {
+      "name": "isobject",
+      "version": "3.0.1",
+      "variant": "harmless-addition",
+      "commit": "7ad1fc405d19f144a21e2bfe947fa82801baa7aa",
+      "artifactSha256": "2b391768c365f88be94838e55988df9a51bd49a6a74cb5a60dd8421be43034b7",
+      "sourceSha256": "5c2604222ccdcfa276966b79d5f53fff8171d75a420a39e40953c05af0ff0890",
+      "artifactUrl": "https://registry.npmjs.org/isobject/-/isobject-3.0.1.tgz",
+      "sourceUrl": "https://codeload.github.com/jonschlinkert/isobject/tar.gz/7ad1fc405d19f144a21e2bfe947fa82801baa7aa",
+      "modifiedDigestKind": "canonical-entry-inventory",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 9,
+      "suspiciousFindings": [],
+      "durationMs": 0
+    },
+    {
+      "name": "kind-of",
+      "version": "6.0.3",
+      "variant": "original",
+      "commit": "abab085d65f7ee978011da8f135291892fcd97db",
+      "artifactSha256": "6c24443b5b6ca52d3dce399c1e2c27c4591c7529765513eeaa0c265b0c0e63da",
+      "sourceSha256": "7d1a57ca6f41155aa8593c113afbc1723143a9acf98a92d74be703c9c100ce08",
+      "artifactUrl": "https://registry.npmjs.org/kind-of/-/kind-of-6.0.3.tgz",
+      "sourceUrl": "https://codeload.github.com/jonschlinkert/kind-of/tar.gz/abab085d65f7ee978011da8f135291892fcd97db",
+      "modifiedDigestKind": "archive",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 41,
+      "suspiciousFindings": [],
+      "durationMs": 1
+    },
+    {
+      "name": "kind-of",
+      "version": "6.0.3",
+      "variant": "lifecycle-injection",
+      "commit": "abab085d65f7ee978011da8f135291892fcd97db",
+      "artifactSha256": "8186427ba1cfdd72421406b8132d4739df822fa00f2f5df65b56de5ed948825e",
+      "sourceSha256": "7d1a57ca6f41155aa8593c113afbc1723143a9acf98a92d74be703c9c100ce08",
+      "artifactUrl": "https://registry.npmjs.org/kind-of/-/kind-of-6.0.3.tgz",
+      "sourceUrl": "https://codeload.github.com/jonschlinkert/kind-of/tar.gz/abab085d65f7ee978011da8f135291892fcd97db",
+      "modifiedDigestKind": "canonical-entry-inventory",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 44,
+      "suspiciousFindings": [
+        {
+          "ruleId": "lifecycle_change",
+          "severity": "medium",
+          "title": "Published lifecycle script differs"
+        },
+        {
+          "ruleId": "published_executable",
+          "severity": "medium",
+          "title": "Executable source exists only in package"
+        },
+        {
+          "ruleId": "introduced_execute",
+          "severity": "medium",
+          "title": "Introduced execute behavior"
+        }
+      ],
+      "durationMs": 1
+    },
+    {
+      "name": "kind-of",
+      "version": "6.0.3",
+      "variant": "network-injection",
+      "commit": "abab085d65f7ee978011da8f135291892fcd97db",
+      "artifactSha256": "f484bc7b87b151dccd9e90a220821f962aac1665895f01974511ac93ed926e7d",
+      "sourceSha256": "7d1a57ca6f41155aa8593c113afbc1723143a9acf98a92d74be703c9c100ce08",
+      "artifactUrl": "https://registry.npmjs.org/kind-of/-/kind-of-6.0.3.tgz",
+      "sourceUrl": "https://codeload.github.com/jonschlinkert/kind-of/tar.gz/abab085d65f7ee978011da8f135291892fcd97db",
+      "modifiedDigestKind": "canonical-entry-inventory",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 43,
+      "suspiciousFindings": [
+        {
+          "ruleId": "introduced_network",
+          "severity": "high",
+          "title": "Introduced network behavior"
+        },
+        {
+          "ruleId": "introduced_sensitive",
+          "severity": "high",
+          "title": "Introduced sensitive behavior"
+        }
+      ],
+      "durationMs": 4
+    },
+    {
+      "name": "kind-of",
+      "version": "6.0.3",
+      "variant": "harmless-addition",
+      "commit": "abab085d65f7ee978011da8f135291892fcd97db",
+      "artifactSha256": "df620bfa39a6d0e85ecf4283b316edf3855df0c1db0e7285bf3532a5bb63299e",
+      "sourceSha256": "7d1a57ca6f41155aa8593c113afbc1723143a9acf98a92d74be703c9c100ce08",
+      "artifactUrl": "https://registry.npmjs.org/kind-of/-/kind-of-6.0.3.tgz",
+      "sourceUrl": "https://codeload.github.com/jonschlinkert/kind-of/tar.gz/abab085d65f7ee978011da8f135291892fcd97db",
+      "modifiedDigestKind": "canonical-entry-inventory",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 42,
+      "suspiciousFindings": [],
+      "durationMs": 1
+    },
+    {
+      "name": "kleur",
+      "version": "4.1.5",
+      "variant": "original",
+      "commit": "fa3454483899ddab550d08c18c028e6db1aab0e5",
+      "artifactSha256": "0d99562acf82fca4afce2a57b687289a524ac6755dcaf1fdf82a147473091469",
+      "sourceSha256": "f89639d261e294cfe8ce5f865dcfb764414c9130530c3b9156e2b63e1c492314",
+      "artifactUrl": "https://registry.npmjs.org/kleur/-/kleur-4.1.5.tgz",
+      "sourceUrl": "https://codeload.github.com/lukeed/kleur/tar.gz/fa3454483899ddab550d08c18c028e6db1aab0e5",
+      "modifiedDigestKind": "archive",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 20,
+      "suspiciousFindings": [],
+      "durationMs": 3
+    },
+    {
+      "name": "kleur",
+      "version": "4.1.5",
+      "variant": "lifecycle-injection",
+      "commit": "fa3454483899ddab550d08c18c028e6db1aab0e5",
+      "artifactSha256": "bdfd805bcd7432796a9e3d04636cc50404f914477f66281a314ec001dd1d367a",
+      "sourceSha256": "f89639d261e294cfe8ce5f865dcfb764414c9130530c3b9156e2b63e1c492314",
+      "artifactUrl": "https://registry.npmjs.org/kleur/-/kleur-4.1.5.tgz",
+      "sourceUrl": "https://codeload.github.com/lukeed/kleur/tar.gz/fa3454483899ddab550d08c18c028e6db1aab0e5",
+      "modifiedDigestKind": "canonical-entry-inventory",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 23,
+      "suspiciousFindings": [
+        {
+          "ruleId": "lifecycle_change",
+          "severity": "medium",
+          "title": "Published lifecycle script differs"
+        },
+        {
+          "ruleId": "published_executable",
+          "severity": "medium",
+          "title": "Executable source exists only in package"
+        },
+        {
+          "ruleId": "introduced_execute",
+          "severity": "medium",
+          "title": "Introduced execute behavior"
+        }
+      ],
+      "durationMs": 2
+    },
+    {
+      "name": "kleur",
+      "version": "4.1.5",
+      "variant": "network-injection",
+      "commit": "fa3454483899ddab550d08c18c028e6db1aab0e5",
+      "artifactSha256": "9e83975fe2ccbdf2d2b18a71d89df0cec407657f21ab04bc8041ed6acfca830b",
+      "sourceSha256": "f89639d261e294cfe8ce5f865dcfb764414c9130530c3b9156e2b63e1c492314",
+      "artifactUrl": "https://registry.npmjs.org/kleur/-/kleur-4.1.5.tgz",
+      "sourceUrl": "https://codeload.github.com/lukeed/kleur/tar.gz/fa3454483899ddab550d08c18c028e6db1aab0e5",
+      "modifiedDigestKind": "canonical-entry-inventory",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 22,
+      "suspiciousFindings": [
+        {
+          "ruleId": "introduced_network",
+          "severity": "high",
+          "title": "Introduced network behavior"
+        },
+        {
+          "ruleId": "introduced_sensitive",
+          "severity": "high",
+          "title": "Introduced sensitive behavior"
+        }
+      ],
+      "durationMs": 2
+    },
+    {
+      "name": "kleur",
+      "version": "4.1.5",
+      "variant": "harmless-addition",
+      "commit": "fa3454483899ddab550d08c18c028e6db1aab0e5",
+      "artifactSha256": "ecb48bf98d95f111d5dcdac9cf6e297752ff3007e7d315238a2a3ee6295fcb83",
+      "sourceSha256": "f89639d261e294cfe8ce5f865dcfb764414c9130530c3b9156e2b63e1c492314",
+      "artifactUrl": "https://registry.npmjs.org/kleur/-/kleur-4.1.5.tgz",
+      "sourceUrl": "https://codeload.github.com/lukeed/kleur/tar.gz/fa3454483899ddab550d08c18c028e6db1aab0e5",
+      "modifiedDigestKind": "canonical-entry-inventory",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 21,
+      "suspiciousFindings": [],
+      "durationMs": 2
+    },
+    {
+      "name": "picocolors",
+      "version": "1.1.1",
+      "variant": "original",
+      "commit": "6f0a4638348ed20633d623ee973f9c9a96f65104",
+      "artifactSha256": "d3aedb2807967b7eb37fd11b03b7e3701e725af79c650d0812ff7213f8f882d9",
+      "sourceSha256": "87646ed7f9b372d94da80ec298ef4ec6fc0c2a56bb60e0b325a9705037408c7c",
+      "artifactUrl": "https://registry.npmjs.org/picocolors/-/picocolors-1.1.1.tgz",
+      "sourceUrl": "https://codeload.github.com/alexeyraspopov/picocolors/tar.gz/6f0a4638348ed20633d623ee973f9c9a96f65104",
+      "modifiedDigestKind": "archive",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 14,
+      "suspiciousFindings": [],
+      "durationMs": 1
+    },
+    {
+      "name": "picocolors",
+      "version": "1.1.1",
+      "variant": "lifecycle-injection",
+      "commit": "6f0a4638348ed20633d623ee973f9c9a96f65104",
+      "artifactSha256": "83ed9f2e219c8f112ae91f3465d963ae506c35dd2766c376daf4555f0e20dfe0",
+      "sourceSha256": "87646ed7f9b372d94da80ec298ef4ec6fc0c2a56bb60e0b325a9705037408c7c",
+      "artifactUrl": "https://registry.npmjs.org/picocolors/-/picocolors-1.1.1.tgz",
+      "sourceUrl": "https://codeload.github.com/alexeyraspopov/picocolors/tar.gz/6f0a4638348ed20633d623ee973f9c9a96f65104",
+      "modifiedDigestKind": "canonical-entry-inventory",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 16,
+      "suspiciousFindings": [
+        {
+          "ruleId": "lifecycle_change",
+          "severity": "medium",
+          "title": "Published lifecycle script differs"
+        },
+        {
+          "ruleId": "published_executable",
+          "severity": "medium",
+          "title": "Executable source exists only in package"
+        },
+        {
+          "ruleId": "introduced_execute",
+          "severity": "medium",
+          "title": "Introduced execute behavior"
+        }
+      ],
+      "durationMs": 1
+    },
+    {
+      "name": "picocolors",
+      "version": "1.1.1",
+      "variant": "network-injection",
+      "commit": "6f0a4638348ed20633d623ee973f9c9a96f65104",
+      "artifactSha256": "c5eb79a933a4a1bc28113e821a24ce03c3843718212498519a597224a5747932",
+      "sourceSha256": "87646ed7f9b372d94da80ec298ef4ec6fc0c2a56bb60e0b325a9705037408c7c",
+      "artifactUrl": "https://registry.npmjs.org/picocolors/-/picocolors-1.1.1.tgz",
+      "sourceUrl": "https://codeload.github.com/alexeyraspopov/picocolors/tar.gz/6f0a4638348ed20633d623ee973f9c9a96f65104",
+      "modifiedDigestKind": "canonical-entry-inventory",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 16,
+      "suspiciousFindings": [
+        {
+          "ruleId": "introduced_network",
+          "severity": "high",
+          "title": "Introduced network behavior"
+        },
+        {
+          "ruleId": "introduced_sensitive",
+          "severity": "high",
+          "title": "Introduced sensitive behavior"
+        }
+      ],
+      "durationMs": 3
+    },
+    {
+      "name": "picocolors",
+      "version": "1.1.1",
+      "variant": "harmless-addition",
+      "commit": "6f0a4638348ed20633d623ee973f9c9a96f65104",
+      "artifactSha256": "e94566ccb4afbc13674b6676df02497c6a87b25352ef47a2466a6b2425d4fda2",
+      "sourceSha256": "87646ed7f9b372d94da80ec298ef4ec6fc0c2a56bb60e0b325a9705037408c7c",
+      "artifactUrl": "https://registry.npmjs.org/picocolors/-/picocolors-1.1.1.tgz",
+      "sourceUrl": "https://codeload.github.com/alexeyraspopov/picocolors/tar.gz/6f0a4638348ed20633d623ee973f9c9a96f65104",
+      "modifiedDigestKind": "canonical-entry-inventory",
+      "status": "partial",
+      "sourceMethod": "release_git_head",
+      "totalFindings": 15,
+      "suspiciousFindings": [],
+      "durationMs": 1
+    }
+  ]
+}

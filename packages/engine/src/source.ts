@@ -23,9 +23,11 @@ function github(value: string): string | null {
   let u = value
     .replace(/^git\+/, "")
     .replace(/^git:\/\//, "https://")
+    .replace(/\/$/, "")
     .replace(/\.git$/, "");
   if (u.startsWith("github:")) u = "https://github.com/" + u.slice(7);
-  return GithubUrlSchema.safeParse(u).success ? u : null;
+  if (/^[\w.-]+\/[\w.-]+$/.test(u)) u = "https://github.com/" + u;
+  return GithubUrlSchema.safeParse(u).success ? u.toLowerCase() : null;
 }
 async function packageRoot(
   snapshot: SourceSnapshot,

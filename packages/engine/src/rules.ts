@@ -420,5 +420,5 @@ export function runRules(
         [ref, ...(f.sourcePath ? [evidence(d, "source")] : [])],
       );
   }
-  return findings;
+  return [...new Map(findings.map((f) => [f.id, f])).values()];
 }

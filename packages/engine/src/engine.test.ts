@@ -493,3 +493,33 @@ describe("declared generated entry points", () => {
     },
   );
 });
+
+describe("source URL and duplicate signal regressions", () => {
+  it("accepts npm GitHub shorthand and equivalent repository URL spellings", async () => {
+    const f = fixture();
+    f.artifact.metadata.repository = { url: "example/demo-package" };
+    f.source.repositoryUrl = REPOSITORY + ".git/";
+    const d = dependencies();
+    d.ingestion = adapters(f.artifact, f.source);
+    const r = await analyze({ ...request, source: { kind: "auto" } }, d);
+    expect(r.source.method).toBe("release_git_head");
+  });
+  it("deduplicates repeated calls on the same evidence line", async () => {
+    const f = fixture(false);
+    const pkg = {
+      "package.json": '{"name":"demo-package","version":"1.0.0"}',
+      "index.js":
+        'fetch("https://example.invalid");fetch("https://example.invalid");',
+    };
+    const d = dependencies();
+    d.ingestion = adapters(
+      { ...memorySnapshot(pkg), root: "", metadata: f.artifact.metadata },
+      f.source,
+    );
+    const r = await run(d);
+    expect(
+      r.findings.filter((f) => f.ruleId === "introduced_network"),
+    ).toHaveLength(1);
+    expect(AnalysisReportSchema.safeParse(r).success).toBe(true);
+  });
+});
