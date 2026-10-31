@@ -306,7 +306,10 @@ export const App: React.FC = () => {
                   />
                 </div>
 
-                <ReportOverview report={currentJob.report} />
+                <ReportOverview
+                  report={currentJob.report}
+                  isMock={transportMode === "mock"}
+                />
 
                 {/* Split Review Workspace: Left = Searchable File List, Right = Diff & Evidence */}
                 <div className="review-split-layout">
@@ -328,6 +331,7 @@ export const App: React.FC = () => {
                       onStatusFilterChange={setStatusFilter}
                       findingsOnly={findingsOnly}
                       onFindingsOnlyChange={setFindingsOnly}
+                      isMock={transportMode === "mock"}
                     />
                   </aside>
 
@@ -341,6 +345,7 @@ export const App: React.FC = () => {
                       isLoading={isLoadingDetail}
                       error={detailError}
                       highlightRange={highlightRange}
+                      isMock={transportMode === "mock"}
                     />
 
                     <EvidenceReview

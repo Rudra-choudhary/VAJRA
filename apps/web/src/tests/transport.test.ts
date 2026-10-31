@@ -95,4 +95,65 @@ describe("Assignment C: Transport & Fixtures", () => {
     expect(client.isMock).toBe(false);
     expect(client.name).toBe("Live API");
   });
+
+  it("HttpVajraClient normalizes missing stage from server (resolving D1 shape mismatch)", async () => {
+    const client = new HttpVajraClient("http://127.0.0.1:3000");
+    const originalFetch = global.fetch;
+
+    try {
+      // Simulate server returning job with missing stage
+      global.fetch = async () =>
+        ({
+          ok: true,
+          status: 200,
+          json: async () => ({
+            id: "fixture_clean",
+            status: "completed",
+            // stage is omitted by D1 server issue
+            report: FIXTURES.clean.job.report,
+          }),
+        }) as any;
+
+      const job = await client.getAnalysis("fixture_clean");
+      expect(job.stage).toBe("done"); // normalized to done for completed status
+      expect(job.status).toBe("completed");
+    } finally {
+      global.fetch = originalFetch;
+    }
+  });
+
+  it("HttpVajraClient normalizes SQL nulls in listAnalyses items", async () => {
+    const client = new HttpVajraClient("http://127.0.0.1:3000");
+    const originalFetch = global.fetch;
+
+    try {
+      // Simulate server returning items with SQL null name/version
+      global.fetch = async () =>
+        ({
+          ok: true,
+          status: 200,
+          json: async () => ({
+            items: [
+              {
+                id: "analysis_1",
+                name: null, // SQL NULL
+                version: null,
+                status: "queued",
+                createdAt: "2026-11-01T00:00:00.000Z",
+                findingCount: 0,
+              },
+            ],
+            nextCursor: null,
+          }),
+        }) as any;
+
+      const res = await client.listAnalyses();
+      expect(res.items).toHaveLength(1);
+      expect(res.items[0]!.name).toBeUndefined();
+      expect(res.items[0]!.version).toBeUndefined();
+      expect(res.items[0]!.status).toBe("queued");
+    } finally {
+      global.fetch = originalFetch;
+    }
+  });
 });

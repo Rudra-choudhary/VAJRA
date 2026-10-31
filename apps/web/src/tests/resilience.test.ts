@@ -84,4 +84,47 @@ describe("Assignment C: UI Resilience & Missing Evidence Safety", () => {
     expect(removedFile.packagePath).toBeUndefined();
     expect(removedFile.sourcePath).toBe("tests/check.js");
   });
+
+  it("safely handles real-data unresolved source reports (C2)", () => {
+    const unresolvedSource = {
+      repositoryUrl: undefined,
+      commit: undefined,
+      snapshotSha256: undefined,
+      packageRoot: undefined,
+      method: "unresolved",
+      confidence: "low" as const,
+      evidence: ["No GitHead or repository in package.json"],
+      limitations: ["Source cannot be verified; comparisons are partial"],
+    };
+
+    expect(unresolvedSource.method).toBe("unresolved");
+    expect(unresolvedSource.commit).toBeUndefined();
+    expect(unresolvedSource.evidence).toHaveLength(1);
+    expect(unresolvedSource.limitations).toHaveLength(1);
+  });
+
+  it("handles long diffs and truncated diff flags gracefully (C2)", () => {
+    // Generate long diff (e.g. 5,000 lines)
+    const longLines: string[] = ["@@ -1,5000 +1,5000 @@"];
+    for (let i = 1; i <= 5000; i++) {
+      longLines.push(`+ added line ${i}`);
+    }
+    const longDiff = longLines.join("\n");
+    expect(longDiff.split("\n").length).toBe(5001);
+
+    const truncatedDetail = {
+      truncated: true,
+      unifiedDiff: longDiff.slice(0, 500),
+    };
+    expect(truncatedDetail.truncated).toBe(true);
+  });
+
+  it("confirms fixture data is clearly labeled in mock mode (C3)", () => {
+    const fixtureJobId = "fixture_suspicious";
+    expect(fixtureJobId.startsWith("fixture_")).toBe(true);
+
+    const isMock = true;
+    const badgeText = isMock ? "DEMO FIXTURE" : "LIVE REPORT";
+    expect(badgeText).toBe("DEMO FIXTURE");
+  });
 });

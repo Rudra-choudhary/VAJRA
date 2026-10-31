@@ -761,6 +761,52 @@ body {
   color: #fde68a;
 }
 
+.unresolved-source-alert {
+  background-color: rgba(244, 63, 94, 0.12);
+  border-left: 3px solid var(--sev-high);
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 12px;
+  color: #fecdd3;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.fixture-watermark-notice {
+  background-color: rgba(245, 158, 11, 0.08);
+  border: 1px dashed var(--sev-med-border);
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
+  margin-bottom: 16px;
+  font-size: 12px;
+  color: #fde68a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.diff-truncation-alert {
+  background-color: rgba(245, 158, 11, 0.1);
+  border-bottom: 1px solid var(--sev-med-border);
+  padding: 8px 16px;
+  font-size: 12px;
+  color: #fde68a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.diff-line-count {
+  font-size: 11px;
+  color: var(--text-muted);
+  background-color: var(--bg-card);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+}
+
 .findings-stat-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);

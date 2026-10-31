@@ -21,6 +21,7 @@ export interface SearchableFileListProps {
   onStatusFilterChange: (status: FileStatusFilter) => void;
   findingsOnly: boolean;
   onFindingsOnlyChange: (enabled: boolean) => void;
+  isMock?: boolean;
 }
 
 export const SearchableFileList: React.FC<SearchableFileListProps> = ({
@@ -34,7 +35,10 @@ export const SearchableFileList: React.FC<SearchableFileListProps> = ({
   onStatusFilterChange,
   findingsOnly,
   onFindingsOnlyChange,
+  isMock = false,
 }) => {
+  const [displayLimit, setDisplayLimit] = React.useState(100);
+
   // Map finding ID to finding for quick lookup
   const findingMap = useMemo(() => {
     const map = new Map<string, Finding>();
@@ -162,9 +166,15 @@ export const SearchableFileList: React.FC<SearchableFileListProps> = ({
 
         <div className="file-list-summary">
           <span>
-            Showing <strong>{filteredFiles.length}</strong> of {files.length}{" "}
-            files
+            Showing{" "}
+            <strong>{Math.min(filteredFiles.length, displayLimit)}</strong> of{" "}
+            {files.length} files
           </span>
+          {isMock && (
+            <Badge variant="warning" className="ml-2">
+              FIXTURE FILES
+            </Badge>
+          )}
         </div>
       </div>
 
@@ -174,7 +184,7 @@ export const SearchableFileList: React.FC<SearchableFileListProps> = ({
             <p>No files match current search and status filters.</p>
           </div>
         ) : (
-          filteredFiles.map((file, idx) => {
+          filteredFiles.slice(0, displayLimit).map((file, idx) => {
             const isSelected = file.id === selectedFileId;
             const statusMeta = getFileStatusMeta(file.status);
 
@@ -260,6 +270,21 @@ export const SearchableFileList: React.FC<SearchableFileListProps> = ({
               </div>
             );
           })
+        )}
+        {filteredFiles.length > displayLimit && (
+          <div
+            className="load-more-files-row"
+            style={{ padding: "12px", textAlign: "center" }}
+          >
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              style={{ width: "100%" }}
+              onClick={() => setDisplayLimit((prev) => prev + 100)}
+            >
+              Load More Files ({filteredFiles.length - displayLimit} remaining)
+            </button>
+          </div>
         )}
       </div>
     </div>
