@@ -264,6 +264,22 @@ export const FileDetailSchema = z
 export const ApiErrorSchema = z
   .object({ code: z.string(), message: z.string(), retryable: z.boolean() })
   .strict();
+/** Stable adapter failure codes. Adapters may include these in internal typed errors. */
+export const IngestionErrorCodeSchema = z.enum([
+  "INVALID_INPUT",
+  "UNSUPPORTED_HOST",
+  "NETWORK_ERROR",
+  "NETWORK_TIMEOUT",
+  "HTTP_ERROR",
+  "REGISTRY_ERROR",
+  "NOT_FOUND",
+  "INTEGRITY_MISMATCH",
+  "INVALID_ARCHIVE",
+  "UNSAFE_ARCHIVE_ENTRY",
+  "ARCHIVE_LIMIT_EXCEEDED",
+  "UPLOAD_NOT_FOUND",
+  "CANCELLED",
+]);
 export const AnalysisJobSchema = z
   .object({
     id: IdSchema,
@@ -322,6 +338,7 @@ export type Confidence = z.infer<typeof ConfidenceSchema>;
 export type Severity = z.infer<typeof SeveritySchema>;
 export type Classification = z.infer<typeof ClassificationSchema>;
 export type ApiError = z.infer<typeof ApiErrorSchema>;
+export type IngestionErrorCode = z.infer<typeof IngestionErrorCodeSchema>;
 export type AnalysisJob = z.infer<typeof AnalysisJobSchema>;
 export type AnalysisSummary = z.infer<typeof AnalysisSummarySchema>;
 export type WatchEntry = z.infer<typeof WatchEntrySchema>;
