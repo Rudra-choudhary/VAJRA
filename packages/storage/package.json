@@ -1,0 +1,9 @@
+{
+  "name": "@vajra/storage",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@vajra/contracts": "0.1.0"
+  }
+}

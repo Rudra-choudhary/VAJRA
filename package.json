@@ -1,0 +1,31 @@
+{
+  "name": "vajra",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b --pretty false && tsc -p tsconfig.check.json --pretty false",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "npm run typecheck && npm test",
+    "demo:engine": "tsx packages/engine/scripts/demo.ts",
+    "smoke:model": "tsx packages/engine/scripts/model-smoke.ts",
+    "format:check": "prettier --check \"packages/contracts/src/**/*.ts\" \"packages/engine/src/**/*.ts\" \"packages/engine/scripts/**/*.ts\"",
+    "evaluate:engine": "python3 packages/engine/scripts/collect-real-fixtures.py && tsx packages/engine/scripts/evaluate.ts"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.6",
+    "prettier": "3.9.10",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3",
+    "vitest": "5.0.5"
+  }
+}

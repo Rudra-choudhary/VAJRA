@@ -1,0 +1,13 @@
+{
+  "fixture": true,
+  "job": {
+    "id": "fixture_failed",
+    "status": "failed",
+    "stage": "retrieving",
+    "error": {
+      "code": "NETWORK_ERROR",
+      "message": "Development fixture: registry unavailable",
+      "retryable": true
+    }
+  }
+}
