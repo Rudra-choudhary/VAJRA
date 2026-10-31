@@ -103,17 +103,6 @@
               "startLine": 4,
               "endLine": 4,
               "excerpt": "  \"files\": ["
-            },
-            {
-              "fileId": "file_a7c9590d4d09120c1da602c9",
-              "side": "source"
-            },
-            {
-              "fileId": "file_3eeb1011b4f49565b00de0ef",
-              "side": "source",
-              "startLine": 4,
-              "endLine": 4,
-              "excerpt": "  \"files\": ["
             }
           ],
           "origin": "combined",

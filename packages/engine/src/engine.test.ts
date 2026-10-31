@@ -194,6 +194,13 @@ describe("comparison and findings", () => {
       ).map((s) => s.kind),
     ).toContain("execute");
   });
+  it.each([
+    'const https = require("node:https"); https.request("example.invalid");',
+    'import * as http from "node:http"; http.get("example.invalid");',
+    'import { request as send } from "https"; send("example.invalid");',
+  ])("detects network calls through Node module bindings: %s", (code) => {
+    expect(signals(code, "file.js").map((s) => s.kind)).toContain("network");
+  });
   it("does not flag an unchanged preexisting sensitive call", async () => {
     const f = fixture(false);
     const code =
@@ -316,7 +323,7 @@ describe("model containment and pipeline", () => {
               interpretation: "needs_review",
               explanation: "Test",
               uncertainty: "Test",
-              evidence: [{ fileId: "invented", side: "package" }],
+              evidenceIds: ["invented"],
             },
           ],
         };
@@ -325,6 +332,38 @@ describe("model containment and pipeline", () => {
     const r = await run(d);
     expect(r.model.status).toBe("failed");
     expect(r.findings.every((f) => f.origin === "rule")).toBe(true);
+  });
+  it("accepts only evidence IDs belonging to the assessed finding", async () => {
+    const d = dependencies();
+    let prompt = "";
+    d.model = {
+      id: "evidence-selection-test",
+      async complete(input) {
+        prompt = input.prompt;
+        const p = JSON.parse(input.prompt);
+        return {
+          assessments: p.findings.map(
+            (f: { id: string; evidence: { id: string }[] }) => ({
+              findingId: f.id,
+              interpretation: "needs_review",
+              explanation: "The supplied evidence supports further review.",
+              evidenceIds: [f.evidence[0]!.id],
+              uncertainty: "Context is limited to the supplied excerpts.",
+            }),
+          ),
+        };
+      },
+    };
+    const r = await run(d);
+    expect(r.model.status).toBe("used");
+    expect(r.findings.some((f) => f.origin === "combined")).toBe(true);
+    const input = JSON.parse(prompt);
+    for (const f of input.findings) {
+      expect(f.evidence.length).toBeGreaterThan(0);
+      expect(f.evidence.every((e: { id: string }) => e.id.length > 0)).toBe(
+        true,
+      );
+    }
   });
   it("rejects wrong excerpts and out-of-range lines", async () => {
     const d = dependencies();

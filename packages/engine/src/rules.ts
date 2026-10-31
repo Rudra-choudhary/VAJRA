@@ -84,7 +84,7 @@ export function signals(text: string, path: string): Signal[] {
           ":" +
           ex.name.text;
       if (
-        /^(fetch|https?:(request|get)|axios(?::\w+)?|undici:(fetch|request))$/.test(
+        /^(fetch|(?:http|https):(?:request|get)|axios(?::\w+)?|undici:(?:fetch|request))$/.test(
           target,
         )
       )
