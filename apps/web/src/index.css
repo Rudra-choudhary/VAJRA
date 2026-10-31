@@ -1309,6 +1309,16 @@ body {
 .simple-report-header h2 { margin:0; font-size:24px; line-height:1.25; }
 .simple-report-date,.simple-secondary-value { margin:6px 0 0; color:var(--text-secondary); font-size:13px; }
 .simple-report-statuses { display:flex; gap:8px; flex-wrap:wrap; }
+.tampering-verdict { display:flex; align-items:flex-start; gap:13px; padding:16px 18px; border:1px solid var(--border-subtle); border-left-width:5px; border-radius:var(--radius-md); }
+.tampering-verdict-icon { display:grid; flex:none; place-items:center; width:27px; height:27px; border-radius:50%; font-size:18px; font-weight:800; line-height:1; }
+.tampering-verdict h3 { margin:0; font-size:18px; line-height:1.35; }
+.tampering-verdict p { margin:4px 0 0; font-size:14px; line-height:1.5; }
+.tampering-verdict-danger { color:var(--sev-high); border-color:var(--sev-high-border); background:var(--sev-high-bg); }
+.tampering-verdict-danger .tampering-verdict-icon { color:#fff; background:var(--sev-high); }
+.tampering-verdict-warning { color:var(--sev-med); border-color:var(--sev-med-border); background:var(--sev-med-bg); }
+.tampering-verdict-warning .tampering-verdict-icon { color:#fff; background:var(--sev-med); }
+.tampering-verdict-success { color:var(--status-success); border-color:#b7ddc9; background:var(--status-success-bg); }
+.tampering-verdict-success .tampering-verdict-icon { color:#fff; background:var(--status-success); }
 .simple-notice { margin:0; padding:10px 12px; border-left:3px solid var(--border-active); background:var(--bg-card-subtle); color:var(--text-primary); font-size:14px; }
 .simple-notice.warning { border-color:var(--sev-med); }
 .simple-report-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1px; overflow:hidden; border:1px solid var(--border-subtle); border-radius:var(--radius-md); background:var(--border-subtle); }
@@ -1339,7 +1349,7 @@ body {
 .model-summary-heading h4 { margin:0; color:var(--text-primary); font-size:15px; }
 .model-summary-heading span { color:var(--text-muted); font-size:12px; }
 .model-summary-card p { margin:0; color:var(--text-secondary); line-height:1.65; white-space:pre-wrap; }
-.report-model-summary { margin-top:16px; }
+.report-model-summary { margin-top:0; }
 .report-model-summary .model-summary-heading h3 { margin:0; color:var(--text-primary); font-size:16px; }
 .simple-digest button { transition:background-color var(--transition-fast), border-color var(--transition-fast); }
 .simple-digest button:hover { background:var(--bg-card-hover); border-color:var(--border-medium); }
