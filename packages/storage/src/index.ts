@@ -29,7 +29,7 @@ export function createStorage(dbPath: string): Storage {
   `);
   const getJobStmt = db.prepare("SELECT status, stage, report, error FROM jobs WHERE id = ?");
   const insertJob = db.prepare("INSERT INTO jobs (id,status,stage,report,error,created_at) VALUES (?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET status=excluded.status,stage=excluded.stage,report=excluded.report,error=excluded.error");
-  const listJobsStmt = db.prepare("SELECT id,status,stage,report,error,created_at FROM jobs ORDER BY created_at DESC LIMIT ?");
+  const listJobsStmt = db.prepare("SELECT id,status,stage,report,error,created_at FROM jobs WHERE (? IS NULL OR created_at < (SELECT created_at FROM jobs WHERE id = ?)) ORDER BY created_at DESC LIMIT ?");
   const insertReport = db.prepare("INSERT INTO reports (id,body) VALUES (?,?) ON CONFLICT(id) DO UPDATE SET body=excluded.body");
   const getReportStmt = db.prepare("SELECT body FROM reports WHERE id = ?");
   const insertDetail = db.prepare("INSERT INTO file_details (analysis_id,file_id,body) VALUES (?,?,?) ON CONFLICT(analysis_id,file_id) DO UPDATE SET body=excluded.body");
@@ -55,7 +55,7 @@ export function createStorage(dbPath: string): Storage {
       } as AnalysisJob;
     },
     listJobs(limit, cursor) {
-      const rows = listJobsStmt.all(limit + 1) as any[];
+      const rows = listJobsStmt.all(cursor, cursor, limit + 1) as any[];
       const items = rows.slice(0, limit).map((r) => ({
         id: r.id,
         status: r.status,
@@ -63,7 +63,7 @@ export function createStorage(dbPath: string): Storage {
         report: r.report ? JSON.parse(r.report) : undefined,
         error: r.error ? JSON.parse(r.error) : undefined,
       })) as AnalysisJob[];
-      const nextCursor = rows.length > limit ? items[items.length - 1].id : null;
+      const nextCursor = rows.length > limit ? rows[limit - 1].id : null;
       return { items, nextCursor };
     },
     saveReport(report) {
