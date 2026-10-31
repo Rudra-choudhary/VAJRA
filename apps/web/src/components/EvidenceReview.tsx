@@ -1,0 +1,223 @@
+import React, { useState } from "react";
+import type { EvidenceRef, FileSummary, Finding } from "@vajra/contracts";
+import {
+  getClassificationLabel,
+  getConfidenceMeta,
+  getSeverityMeta,
+} from "../utils/formatters.js";
+import { renderSafeMarkdown } from "../utils/sanitize.js";
+import { Badge } from "./Common.js";
+
+export interface EvidenceReviewProps {
+  findings: Finding[];
+  files: FileSummary[];
+  selectedFileId: string | null;
+  onSelectEvidence: (evidence: EvidenceRef) => void;
+  onSelectFile: (fileId: string) => void;
+}
+
+export const EvidenceReview: React.FC<EvidenceReviewProps> = ({
+  findings,
+  files,
+  selectedFileId,
+  onSelectEvidence,
+  onSelectFile,
+}) => {
+  const [filterMode, setFilterMode] = useState<"file" | "all">("all");
+
+  const fileMap = React.useMemo(() => {
+    const map = new Map<string, FileSummary>();
+    for (const f of files) {
+      map.set(f.id, f);
+    }
+    return map;
+  }, [files]);
+
+  // Selected file findings vs all findings
+  const displayedFindings = React.useMemo(() => {
+    if (filterMode === "file" && selectedFileId) {
+      return findings.filter((f) =>
+        f.evidence.some((e) => e.fileId === selectedFileId),
+      );
+    }
+    return findings;
+  }, [findings, filterMode, selectedFileId]);
+
+  return (
+    <div
+      className="evidence-panel"
+      role="region"
+      aria-label="Evidence and Findings Review"
+    >
+      <div className="evidence-toolbar">
+        <div className="evidence-titles">
+          <h3 className="evidence-heading">
+            <span className="icon" aria-hidden="true">
+              🔬
+            </span>
+            Findings &amp; Evidence ({displayedFindings.length})
+          </h3>
+        </div>
+
+        <div
+          className="evidence-toggle"
+          role="radiogroup"
+          aria-label="Finding Filter Mode"
+        >
+          <button
+            type="button"
+            role="radio"
+            aria-checked={filterMode === "all"}
+            className={`toggle-btn ${filterMode === "all" ? "active" : ""}`}
+            onClick={() => setFilterMode("all")}
+          >
+            All Findings ({findings.length})
+          </button>
+          <button
+            type="button"
+            role="radio"
+            aria-checked={filterMode === "file"}
+            className={`toggle-btn ${filterMode === "file" ? "active" : ""}`}
+            onClick={() => setFilterMode("file")}
+            disabled={!selectedFileId}
+          >
+            This File Only
+          </button>
+        </div>
+      </div>
+
+      <div className="findings-scroll-list">
+        {displayedFindings.length === 0 ? (
+          <div className="empty-findings-box">
+            <p>
+              {filterMode === "file"
+                ? "No findings associated with the currently selected file."
+                : "No findings reported for this package."}
+            </p>
+          </div>
+        ) : (
+          displayedFindings.map((finding) => {
+            const sevMeta = getSeverityMeta(finding.severity);
+            const confMeta = getConfidenceMeta(finding.confidence);
+
+            return (
+              <article
+                key={finding.id}
+                className={`finding-card card-${finding.severity}`}
+                aria-labelledby={`finding-title-${finding.id}`}
+              >
+                <div className="finding-header">
+                  <div className="finding-badges">
+                    <span className={`badge-pill ${sevMeta.className}`}>
+                      {sevMeta.symbol} {sevMeta.badgeText}
+                    </span>
+                    <Badge variant="info" className={confMeta.className}>
+                      {confMeta.badgeText}
+                    </Badge>
+                    <span className="badge-pill badge-classification">
+                      {getClassificationLabel(finding.classification)}
+                    </span>
+                    <span className="badge-pill badge-origin">
+                      [{finding.origin.toUpperCase()}]
+                    </span>
+                  </div>
+
+                  <span className="finding-rule-chip font-mono">
+                    rule: {finding.ruleId}
+                  </span>
+                </div>
+
+                <h4
+                  id={`finding-title-${finding.id}`}
+                  className="finding-title"
+                >
+                  {finding.title}
+                </h4>
+
+                <div className="finding-explanation">
+                  {renderSafeMarkdown(finding.explanation)}
+                </div>
+
+                {/* Evidence items */}
+                {finding.evidence && finding.evidence.length > 0 && (
+                  <div className="evidence-section">
+                    <h5 className="evidence-section-title">
+                      Verified Evidence Citations:
+                    </h5>
+                    <div className="evidence-cards-list">
+                      {finding.evidence.map((ev, evIdx) => {
+                        const targetFile = fileMap.get(ev.fileId);
+                        const filePath =
+                          ev.side === "package"
+                            ? (targetFile?.packagePath ??
+                              targetFile?.sourcePath)
+                            : (targetFile?.sourcePath ??
+                              targetFile?.packagePath);
+
+                        const lineDesc =
+                          ev.startLine !== undefined && ev.endLine !== undefined
+                            ? `Lines ${ev.startLine}–${ev.endLine}`
+                            : "File-level evidence";
+
+                        return (
+                          <div key={evIdx} className="evidence-ref-card">
+                            <div className="ref-card-header">
+                              <span className="ref-side-tag font-mono">
+                                Side: <strong>{ev.side.toUpperCase()}</strong> (
+                                {lineDesc})
+                              </span>
+
+                              {filePath && (
+                                <button
+                                  type="button"
+                                  className="btn btn-outline btn-xs ref-jump-btn"
+                                  onClick={() => {
+                                    if (targetFile) onSelectFile(targetFile.id);
+                                    onSelectEvidence(ev);
+                                  }}
+                                  title="Inspect file diff"
+                                >
+                                  Jump to {filePath} ↗
+                                </button>
+                              )}
+                            </div>
+
+                            {filePath && (
+                              <div className="ref-path font-mono text-muted">
+                                File: {filePath}
+                              </div>
+                            )}
+
+                            {ev.excerpt && (
+                              <pre className="ref-excerpt-pre font-mono">
+                                <code>{ev.excerpt}</code>
+                              </pre>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Limitations */}
+                {finding.limitations && finding.limitations.length > 0 && (
+                  <div className="limitations-section">
+                    <h5 className="limitations-title text-warning">
+                      Limitations:
+                    </h5>
+                    <ul className="bullet-list text-warning">
+                      {finding.limitations.map((lim, lIdx) => (
+                        <li key={lIdx}>⚠ {lim}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </article>
+            );
+          })
+        )}
+      </div>
+    </div>
+  );
+};
