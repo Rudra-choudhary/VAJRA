@@ -6,7 +6,7 @@ import { join } from "node:path";
 import { analyze, createOllamaClient } from "@vajra/engine";
 import { createStorage } from "@vajra/storage";
 import { renderMarkdown } from "@vajra/reports";
-import { AnalysisRequestSchema, IdSchema } from "@vajra/contracts";
+import { AnalysisRequestSchema, IdSchema, type IngestionAdapter } from "@vajra/contracts";
 import type { AnalysisJob, ApiError, WatchEntry } from "@vajra/contracts";
 
 const PORT = Number(process.env.PORT ?? 3000);
@@ -20,7 +20,7 @@ mkdirSync(WORKSPACE, { recursive: true });
 
 const storage = createStorage(DB_PATH);
 
-const ingestion = {
+const ingestion: IngestionAdapter = {
   async fetchNpmArtifact() {
     throw new Error("npm retrieval not implemented (owner B)");
   },
@@ -107,7 +107,7 @@ app.post("/api/analyses", async (req, reply) => {
     }
   });
   reply.code(202);
-  return { id, status: "queued" };
+  return { id, status: "queued", stage: "queued" };
 });
 
 app.get("/api/analyses/:id", async (req, reply) => {
