@@ -165,8 +165,10 @@ export function runRules(
   details: FileDetail[],
   source: SourceResolution,
   relocations: Map<string, string>,
+  maxFindings = 1000,
 ): Finding[] {
   const findings: Finding[] = [];
+  const seenFindings = new Set<string>();
   const config = details.find((d) => d.file.sourcePath === "package.json");
   const srcManifest = manifest(config?.sourceText ?? null);
   const validSource = source.method !== "unresolved";
@@ -192,11 +194,14 @@ export function runRules(
     refs: EvidenceRef[],
     limitations: string[] = [],
   ) => {
+    const id = stableId(
+      "finding",
+      ruleId + ":" + d.file.id + ":" + JSON.stringify(refs),
+    );
+    if (seenFindings.has(id) || findings.length >= maxFindings) return;
+    seenFindings.add(id);
     findings.push({
-      id: stableId(
-        "finding",
-        ruleId + ":" + d.file.id + ":" + JSON.stringify(refs),
-      ),
+      id,
       ruleId,
       title,
       explanation,
@@ -420,5 +425,5 @@ export function runRules(
         [ref, ...(f.sourcePath ? [evidence(d, "source")] : [])],
       );
   }
-  return [...new Map(findings.map((f) => [f.id, f])).values()];
+  return findings;
 }

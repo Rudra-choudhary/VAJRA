@@ -523,3 +523,12 @@ describe("source URL and duplicate signal regressions", () => {
     expect(AnalysisReportSchema.safeParse(r).success).toBe(true);
   });
 });
+
+it("bounds finding volume and marks the omitted coverage", async () => {
+  const d = dependencies();
+  d.limits = { maxFindings: 2 };
+  const r = await run(d);
+  expect(r.findings.length).toBeLessThanOrEqual(2);
+  expect(r.status).toBe("partial");
+  expect(r.coverage.reasons.join(" ")).toContain("Finding limit");
+});

@@ -43,6 +43,7 @@ export interface SourceSnapshot extends Snapshot {
 }
 export interface Limits {
   maxEntries: number;
+  maxFindings: number;
   maxTextBytes: number;
   maxTotalTextBytes: number;
   maxModelInputChars: number;

@@ -121,8 +121,13 @@ export async function analyze(
     comparison.details,
     source.resolution,
     comparison.relocations,
+    limits.maxFindings,
   );
   const reasons = [...reader.limitations];
+  if (findings.length >= limits.maxFindings)
+    reasons.push(
+      "Finding limit reached; additional review signals may be omitted",
+    );
   if (!source.snapshot || source.resolution.confidence === "low")
     reasons.push(...source.resolution.limitations);
   if (comparison.details.some((d) => d.file.status === "skipped"))

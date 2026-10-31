@@ -10,6 +10,7 @@ import {
 
 export const DEFAULT_LIMITS: Readonly<Limits> = Object.freeze({
   maxEntries: 10000,
+  maxFindings: 1000,
   maxTextBytes: 512 * 1024,
   maxTotalTextBytes: 8 * 1024 * 1024,
   maxModelInputChars: 24000,
