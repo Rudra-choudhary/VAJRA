@@ -80,6 +80,26 @@ export const ReportOverview: React.FC<ReportOverviewProps> = ({
         </section>
       </div>
 
+      <section className="model-summary-card report-model-summary" aria-labelledby="overall-model-summary-heading">
+        <div className="model-summary-heading">
+          <h3 id="overall-model-summary-heading">
+            {report.model.id?.toLowerCase().startsWith("qwen") ? "Qwen summary" : "AI summary"}
+          </h3>
+          <span>{isMock ? "Synthetic demo" : "Model-generated · Unverified"}</span>
+        </div>
+        <p>
+          {isMock
+            ? "This demo report uses synthetic sample data; no live Qwen summary was generated."
+            : report.model.status === "used" && report.model.summary
+              ? report.model.summary
+              : report.model.status === "used"
+                ? "No summary was saved with this report. Run a new analysis to generate one."
+                : report.model.status === "failed"
+                  ? "The model could not generate a summary for this report. Review the limitations for details."
+                  : "No model is configured for this report, so there is no AI summary."}
+        </p>
+      </section>
+
       <div className="simple-model-row" aria-label="AI review status">
         <span>
           <strong>AI review</strong>
