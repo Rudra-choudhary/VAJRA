@@ -51,7 +51,7 @@ export function createIngestionAdapter(
       input: { repositoryUrl: string; commit: string },
       context: AdapterContext,
     ): Promise<SourceSnapshot> {
-      return fetchGithubSnapshot(input, context);
+      return fetchGithubSnapshot(input, context, options);
     },
 
     inspectUploadedArchive: (async (
@@ -70,7 +70,7 @@ export function createIngestionAdapter(
       input: { repositoryUrl: string; ref: string },
       context: AdapterContext,
     ): Promise<string | null> {
-      return resolveGithubRef(input, context);
+      return resolveGithubRef(input, context, options);
     },
   };
 }

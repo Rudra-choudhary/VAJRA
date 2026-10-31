@@ -16,7 +16,9 @@ export function truncateUtf8(
   buf: Buffer,
   maxBytes: number,
 ): { buffer: Buffer; truncated: boolean } {
-  const safeLimit = Number.isFinite(maxBytes) ? Math.max(0, Math.floor(maxBytes)) : 0;
+  const safeLimit = Number.isFinite(maxBytes)
+    ? Math.max(0, Math.floor(maxBytes))
+    : 0;
   if (buf.length <= safeLimit) {
     return { buffer: buf, truncated: false };
   }
@@ -62,7 +64,7 @@ function createSnapshotCore(files: Map<string, Buffer>): {
     a < b ? -1 : a > b ? 1 : 0,
   );
 
-  const entries: SnapshotEntry[] = Object.freeze(
+  const entries: readonly SnapshotEntry[] = Object.freeze(
     sortedPaths.map((path) => {
       const content = files.get(path)!;
       const sha256 = createHash("sha256").update(content).digest("hex");

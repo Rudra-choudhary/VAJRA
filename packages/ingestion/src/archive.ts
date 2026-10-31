@@ -81,7 +81,7 @@ export async function parseTarGzStream(
 
       if (err) {
         try {
-          tarParser.abort(err.message);
+          tarParser.abort(err);
         } catch {
           // ignore parser abort failure
         }
@@ -112,7 +112,10 @@ export async function parseTarGzStream(
       cleanup(
         err instanceof IngestionError
           ? err
-          : new IngestionError("INVALID_ARCHIVE", `Source stream error: ${err.message}`),
+          : new IngestionError(
+              "INVALID_ARCHIVE",
+              `Source stream error: ${err.message}`,
+            ),
       );
     });
 
@@ -120,19 +123,28 @@ export async function parseTarGzStream(
       cleanup(
         err instanceof IngestionError
           ? err
-          : new IngestionError("INVALID_ARCHIVE", `Counter stream error: ${err.message}`),
+          : new IngestionError(
+              "INVALID_ARCHIVE",
+              `Counter stream error: ${err.message}`,
+            ),
       );
     });
 
     gunzip.on("error", (err) => {
       cleanup(
-        new IngestionError("INVALID_ARCHIVE", `Corrupt or invalid gzip stream: ${err.message}`),
+        new IngestionError(
+          "INVALID_ARCHIVE",
+          `Corrupt or invalid gzip stream: ${err.message}`,
+        ),
       );
     });
 
     tarParser.on("error", (err: Error) => {
       cleanup(
-        new IngestionError("INVALID_ARCHIVE", `Corrupt or invalid tar archive: ${err.message}`),
+        new IngestionError(
+          "INVALID_ARCHIVE",
+          `Corrupt or invalid tar archive: ${err.message}`,
+        ),
       );
     });
 
@@ -165,7 +177,11 @@ export async function parseTarGzStream(
 
       // 2. Only regular files accepted; reject symlink, hardlink, device, fifo, etc.
       // Accepts 'File', '0', and legacy 'OldFile' (V7 NUL typeflag mapped by tar to 'File')
-      if (entryType !== "File" && entryType !== "0" && entryType !== "OldFile") {
+      if (
+        entryType !== "File" &&
+        entryType !== "0" &&
+        entryType !== "OldFile"
+      ) {
         cleanup(
           new IngestionError(
             "UNSAFE_ARCHIVE_ENTRY",
@@ -181,7 +197,9 @@ export async function parseTarGzStream(
       try {
         validPath = validateArchivePath(entry.path);
       } catch (pathErr) {
-        cleanup(pathErr instanceof Error ? pathErr : new Error(String(pathErr)));
+        cleanup(
+          pathErr instanceof Error ? pathErr : new Error(String(pathErr)),
+        );
         entry.resume();
         return;
       }

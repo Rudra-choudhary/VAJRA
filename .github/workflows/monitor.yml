@@ -10,4 +10,19 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
       - run: npm ci
-      - run: npx tsx apps/cli/src/index.ts monitor --once
+      - uses: actions/cache/restore@v4
+        with:
+          path: data/vajra.db
+          key: vajra-monitor-${{ github.run_id }}
+          restore-keys: vajra-monitor-
+      - name: Start local API
+        run: npx tsx apps/server/src/index.ts > /tmp/vajra-server.log 2>&1 &
+      - name: Wait for API and monitor packages
+        run: |
+          for i in $(seq 1 30); do curl --fail http://127.0.0.1:3000/api/health && break; sleep 1; done
+          npx tsx apps/cli/src/index.ts monitor --once
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: data/vajra.db
+          key: vajra-monitor-${{ github.run_id }}

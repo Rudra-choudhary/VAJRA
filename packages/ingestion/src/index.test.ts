@@ -29,13 +29,18 @@ describe("createIngestionAdapter", () => {
     expect(typeof adapter.resolveGithubRef).toBe("function");
   });
 
-  it("GitHub methods reject with code NOT_FOUND (B-1 stubs)", async () => {
-    const adapter = createIngestionAdapter();
+  it("fetches exact GitHub refs and reports missing resources", async () => {
+    const adapter = createIngestionAdapter({
+      fetch: async () => new Response(null, { status: 404 }),
+    });
     const context = mockContext();
 
     await expect(
       adapter.fetchGithubSnapshot(
-        { repositoryUrl: "https://github.com/example/repo", commit: "a".repeat(40) },
+        {
+          repositoryUrl: "https://github.com/example/repo",
+          commit: "a".repeat(40),
+        },
         context,
       ),
     ).rejects.toMatchObject({
@@ -47,9 +52,6 @@ describe("createIngestionAdapter", () => {
         { repositoryUrl: "https://github.com/example/repo", ref: "v1.0.0" },
         context,
       ),
-    ).rejects.toMatchObject({
-      code: "NOT_FOUND",
-    });
+    ).resolves.toBeNull();
   });
 });
-
