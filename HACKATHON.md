@@ -11,6 +11,14 @@ VAJRA
 3. Rudra Pratap Singh Choudhary
 4. Neeraj Singh
 
+## Project owner
+
+| Assignment | Owner | Responsibility |
+| --- | --- | --- |
+| A | Rudra Pratap Singh Choudhary | Technical lead, shared contracts, and analysis engine |
+
+B, C, and D owners are assigned by the team separately.
+
 ## Selected problem statement
 
 Problem 04 — Published Package vs Source Code Integrity Analyzer.
@@ -21,14 +29,13 @@ Vajra compares published npm packages with their source code, flags suspicious c
 
 ## AI models used and selection rationale
 
-### Planned open-weight product models
+### Open-weight product model
 
 | Model | Selection rationale and intended role |
 | --- | --- |
-| [Gemma](https://ai.google.dev/gemma/docs) | Open-weight model family selected for explaining package/source differences and producing readable, evidence-backed findings. Exact variant and runtime will be recorded after validation. |
-| [Qwen2.5-Coder-7B-Instruct](https://huggingface.co/Qwen/Qwen2.5-Coder-7B-Instruct) | Apache-2.0-licensed coding model selected for contextual analysis of code diffs and suspicious modifications. |
+| [Qwen](https://huggingface.co/Qwen) | Qwen is the documented product model family for contextual explanations of package/source findings. The local integration smoke-tested `qwen3.5:latest` through Ollama. |
 
-The engine includes an Ollama adapter with structured-output and evidence validation. A live integration check used `qwen3.5:latest` on a controlled tampering fixture; it is distinct from the planned Qwen2.5 model above. The smoke report is in `packages/engine/evaluation/qwen-live-smoke.json`.
+The engine includes an Ollama adapter with structured-output and evidence validation. A live integration check used `qwen3.5:latest` on a controlled tampering fixture. The smoke report is in `packages/engine/evaluation/qwen-live-smoke.json`.
 
 Gemma 4 E4B (`gemma4:e4b`) was also attempted on the same controlled fixture. Its initial response was rejected because a cited excerpt did not match the source lines; the complete failed report is preserved in `packages/engine/evaluation/gemma-initial-rejected.json`. The engine correctly retained deterministic findings and marked model assessment failed. The evidence-ID contract was subsequently tightened so the model can select only existing finding evidence and cannot supply new locations. A passing Gemma rerun has not yet been recorded. These are model integration checks, not quality benchmarks. Full application integration remains in progress.
 
