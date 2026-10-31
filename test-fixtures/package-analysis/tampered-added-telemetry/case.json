@@ -1,0 +1,8 @@
+{
+  "case": "tampered-added-telemetry",
+  "expected": "Potential tampering detected",
+  "details": "Adds package-only executable code with an outbound request to the reserved .invalid domain.",
+  "packageArchive": "package.tgz",
+  "sourceArchive": "source.tgz",
+  "safeToInstall": false
+}

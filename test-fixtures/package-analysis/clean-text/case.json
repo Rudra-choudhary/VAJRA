@@ -1,0 +1,8 @@
+{
+  "case": "clean-text",
+  "expected": "No suspicious changes",
+  "details": "A second clean control with matching manifest and code.",
+  "packageArchive": "package.tgz",
+  "sourceArchive": "source.tgz",
+  "safeToInstall": false
+}

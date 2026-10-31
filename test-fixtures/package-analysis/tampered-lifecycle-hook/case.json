@@ -1,0 +1,8 @@
+{
+  "case": "tampered-lifecycle-hook",
+  "expected": "Potential tampering detected",
+  "details": "Adds a postinstall hook and a harmless marker script. Do not install the archive.",
+  "packageArchive": "package.tgz",
+  "sourceArchive": "source.tgz",
+  "safeToInstall": false
+}

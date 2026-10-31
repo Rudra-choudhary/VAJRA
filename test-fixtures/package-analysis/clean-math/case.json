@@ -1,0 +1,8 @@
+{
+  "case": "clean-math",
+  "expected": "No suspicious changes",
+  "details": "Published files exactly match the source snapshot.",
+  "packageArchive": "package.tgz",
+  "sourceArchive": "source.tgz",
+  "safeToInstall": false
+}
