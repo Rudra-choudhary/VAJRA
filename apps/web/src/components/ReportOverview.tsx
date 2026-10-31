@@ -12,13 +12,20 @@ import { Badge } from "./Common.js";
 
 export interface ReportOverviewProps {
   report: AnalysisReport;
+  isMock?: boolean;
 }
 
-export const ReportOverview: React.FC<ReportOverviewProps> = ({ report }) => {
+export const ReportOverview: React.FC<ReportOverviewProps> = ({
+  report,
+  isMock = false,
+}) => {
   const [copiedHash, setCopiedHash] = useState<string | null>(null);
 
   const statusBadge = getJobStatusBadge(report.status);
   const confMeta = getConfidenceMeta(report.source.confidence);
+  const isSourceUnresolved =
+    report.source.method === "unresolved" ||
+    (!report.source.commit && !report.source.snapshotSha256);
 
   // Group findings count by severity directly from actual report.findings
   const counts = {
@@ -50,6 +57,11 @@ export const ReportOverview: React.FC<ReportOverviewProps> = ({ report }) => {
             >
               {statusBadge.label} REPORT
             </Badge>
+            {isMock && (
+              <Badge variant="warning" symbol="🧪" className="badge-lg">
+                DEMO FIXTURE
+              </Badge>
+            )}
             <span className="analysis-id-chip">
               ID: <code>{report.id}</code>
             </span>
@@ -68,7 +80,34 @@ export const ReportOverview: React.FC<ReportOverviewProps> = ({ report }) => {
           </div>
         </div>
 
-        {report.status === "partial" && (
+        {isMock && (
+          <div className="fixture-watermark-notice" role="status">
+            <span className="notice-icon" aria-hidden="true">
+              🧪
+            </span>
+            <span>
+              <strong>Synthetic Development Fixture:</strong> This review is
+              backed by mock data for demonstration purposes. It does not
+              represent a live engine assessment.
+            </span>
+          </div>
+        )}
+
+        {isSourceUnresolved && (
+          <div className="unresolved-source-alert" role="alert">
+            <span className="notice-icon" aria-hidden="true">
+              ⚠️
+            </span>
+            <div className="notice-content">
+              <strong>Source Unresolved:</strong> The source repository, release
+              tag, or commit could not be mapped unambiguously (
+              {report.source.method}). Comparison is partial or bounded by
+              published artifact metadata. Check source limitations below.
+            </div>
+          </div>
+        )}
+
+        {report.status === "partial" && !isSourceUnresolved && (
           <div className="partial-warning-notice" role="alert">
             <span className="notice-icon" aria-hidden="true">
               ⚠

@@ -97,7 +97,20 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
                       </span>
                     </td>
                     <td>
-                      <strong>{item.name ?? "unnamed"}</strong>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "6px",
+                        }}
+                      >
+                        <strong>{item.name ?? "unnamed"}</strong>
+                        {item.id.startsWith("fixture_") && (
+                          <span className="status-badge-pill status-skipped">
+                            FIXTURE
+                          </span>
+                        )}
+                      </div>
                       <div className="cell-id font-mono text-muted">
                         {item.id}
                       </div>

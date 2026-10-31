@@ -25,7 +25,9 @@ describe("Assignment C: Safe Text & Escaped Repository Rendering", () => {
       "```",
     ].join("\n");
 
-    const element = renderSafeMarkdown(markdown) as React.ReactElement;
+    const element = renderSafeMarkdown(markdown) as React.ReactElement<{
+      className?: string;
+    }>;
     expect(element).toBeDefined();
     expect(element.props.className).toBe("safe-md-container");
     expect(React.isValidElement(element)).toBe(true);
@@ -33,7 +35,9 @@ describe("Assignment C: Safe Text & Escaped Repository Rendering", () => {
 
   it("renders untrusted text nodes directly without executing scripts", () => {
     const dangerous = '<img src="x" onerror="evil()"/>';
-    const element = renderSafeMarkdown(dangerous) as React.ReactElement;
+    const element = renderSafeMarkdown(dangerous) as React.ReactElement<{
+      dangerouslySetInnerHTML?: unknown;
+    }>;
     expect(element).toBeDefined();
     expect(React.isValidElement(element)).toBe(true);
     // Does not have dangerouslySetInnerHTML prop

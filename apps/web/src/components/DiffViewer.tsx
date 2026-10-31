@@ -10,6 +10,7 @@ export interface DiffViewerProps {
   detail: FileDetail | null;
   isLoading: boolean;
   error?: string | null;
+  isMock?: boolean;
   highlightRange?: {
     side: "package" | "source";
     startLine?: number;
@@ -22,6 +23,7 @@ export const DiffViewer: React.FC<DiffViewerProps> = ({
   detail,
   isLoading,
   error,
+  isMock = false,
   highlightRange,
 }) => {
   const [viewMode, setViewMode] = useState<DiffViewMode>("diff");
@@ -43,6 +45,10 @@ export const DiffViewer: React.FC<DiffViewerProps> = ({
   const statusMeta = getFileStatusMeta(fileSummary.status);
   const pkgPath = fileSummary.packagePath ?? "—";
   const srcPath = fileSummary.sourcePath ?? "—";
+  const isTruncated = Boolean(detail?.truncated || fileSummary.truncated);
+  const diffLinesCount = detail?.unifiedDiff
+    ? detail.unifiedDiff.split("\n").length
+    : 0;
 
   return (
     <div
@@ -60,7 +66,15 @@ export const DiffViewer: React.FC<DiffViewerProps> = ({
             {fileSummary.packagePath ?? fileSummary.sourcePath}
           </span>
           {fileSummary.binary && <Badge variant="neutral">BINARY</Badge>}
-          {fileSummary.truncated && <Badge variant="warning">TRUNCATED</Badge>}
+          {isTruncated && (
+            <Badge variant="warning">TRUNCATED (512 KB CAP)</Badge>
+          )}
+          {isMock && <Badge variant="warning">FIXTURE DIFF</Badge>}
+          {diffLinesCount > 0 && viewMode === "diff" && (
+            <span className="diff-line-count font-mono">
+              {diffLinesCount} lines
+            </span>
+          )}
         </div>
 
         <div
@@ -114,6 +128,18 @@ export const DiffViewer: React.FC<DiffViewerProps> = ({
 
       {/* Content Area */}
       <div className="diff-content-viewport">
+        {isTruncated && (
+          <div className="diff-truncation-alert" role="status">
+            <span className="notice-icon" aria-hidden="true">
+              ⚠️
+            </span>
+            <span>
+              <strong>Preview Truncated:</strong> File exceeded the 512 KB
+              review preview limit. Diff and content views represent the bounded
+              prefix.
+            </span>
+          </div>
+        )}
         {isLoading ? (
           <LoadingState message="Loading file detail & diff…" />
         ) : error ? (

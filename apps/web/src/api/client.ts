@@ -118,7 +118,22 @@ export class HttpVajraClient implements VajraTransport {
     const res = await fetch(
       `${this.baseUrl}/api/analyses/${encodeURIComponent(id)}`,
     );
-    return this.handleResponse(res, AnalysisJobSchema);
+    const raw: any = await this.handleResponse(res);
+
+    // Resilient shape normalization (handles D1 missing stage or server omission)
+    if (raw && typeof raw === "object") {
+      if (!raw.stage) {
+        if (raw.status === "completed" || raw.status === "partial") {
+          raw.stage = "done";
+        } else if (raw.status === "queued") {
+          raw.stage = "queued";
+        } else {
+          raw.stage = "retrieving";
+        }
+      }
+    }
+
+    return AnalysisJobSchema.parse(raw);
   }
 
   async listAnalyses(params?: {
@@ -132,7 +147,18 @@ export class HttpVajraClient implements VajraTransport {
     const qs = query.toString();
     const url = `${this.baseUrl}/api/analyses${qs ? `?${qs}` : ""}`;
     const res = await fetch(url);
-    return this.handleResponse(res, ListAnalysesSchema);
+    const raw: any = await this.handleResponse(res);
+
+    // Normalize SQL nulls to undefined for contract schema compatibility
+    if (raw && Array.isArray(raw.items)) {
+      raw.items = raw.items.map((item: any) => ({
+        ...item,
+        name: item.name ?? undefined,
+        version: item.version ?? undefined,
+      }));
+    }
+
+    return ListAnalysesSchema.parse(raw);
   }
 
   async getFileDetail(analysisId: string, fileId: string): Promise<FileDetail> {
