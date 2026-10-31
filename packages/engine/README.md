@@ -15,25 +15,29 @@ npm run demo:engine
 The demo produces clearly labeled, deterministic contract fixtures using a fake model. To make a real local model call:
 
 ```sh
-ollama pull gemma4:e4b
-VAJRA_MODEL=gemma4:e4b npm run smoke:model
+ollama pull qwen3.5:latest
+VAJRA_MODEL=qwen3.5:latest npm run smoke:model
 ```
 
-The smoke test uses a synthetic tampered package but an actual model response. Output is saved under ignored `.vajra/`. It exits nonzero if model assessment fails. You may set `VAJRA_MODEL` to another installed model and `VAJRA_OLLAMA_URL` to a trusted Ollama origin. Only explicit configuration enables the model; there is no hidden cloud fallback or automatic model download.
+The smoke test uses a synthetic tampered package and an actual model response. Output is saved under ignored `.vajra/`. The server defaults to `qwen3.5:latest`; the model adds contextual explanations to rule findings while deterministic findings and evidence remain authoritative. The model cannot introduce evidence locations. Override with another installed model or set `VAJRA_MODEL=none` to disable it. `VAJRA_OLLAMA_URL` selects a trusted local Ollama origin. There is no cloud fallback or automatic model download.
 
 ## Integration
 
 ```ts
-import { analyze, createOllamaClient } from '@vajra/engine';
-const report = await analyze(request, {
-  analysisId,
-  ingestion,
-  workspaceDir,
-  resolveUpload,
-  saveFileDetail,
-  model: createOllamaClient({ model: 'gemma4:e4b' }),
-  signal,
-}, async stage => updateJobStage(stage));
+import { analyze, createOllamaClient } from "@vajra/engine";
+const report = await analyze(
+  request,
+  {
+    analysisId,
+    ingestion,
+    workspaceDir,
+    resolveUpload,
+    saveFileDetail,
+    model: createOllamaClient({ model: "gemma4:e4b" }),
+    signal,
+  },
+  async (stage) => updateJobStage(stage),
+);
 ```
 
 Types are exported by `@vajra/contracts`. `analyze` validates input and output, emits retrieving/resolving/comparing/assessing/done, and persists validated file details through the callback. The caller stores the returned report. Models are dependency-injected, so tests are deterministic without network credentials.

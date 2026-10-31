@@ -317,6 +317,7 @@ describe("model containment and pipeline", () => {
       async complete({ prompt }) {
         const p = JSON.parse(prompt);
         return {
+          summary: "Summary based on the supplied findings; not a safety certification.",
           assessments: [
             {
               findingId: p.findings[0].id,
@@ -342,6 +343,7 @@ describe("model containment and pipeline", () => {
         prompt = input.prompt;
         const p = JSON.parse(input.prompt);
         return {
+          summary: "Summary based on the supplied findings; not a safety certification.",
           assessments: p.findings.map(
             (f: { id: string; evidence: { id: string }[] }) => ({
               findingId: f.id,
@@ -452,7 +454,7 @@ describe("model containment and pipeline", () => {
     const fetcher = vi.fn(
       async () =>
         new Response(
-          JSON.stringify({ message: { content: '{"assessments":[]}' } }),
+          JSON.stringify({ message: { content: '{"assessments":[],"summary":"No findings were supplied; this is not a safety certification."}' } }),
           { status: 200 },
         ),
     );
@@ -466,7 +468,7 @@ describe("model containment and pipeline", () => {
         prompt: "test",
         signal: new AbortController().signal,
       }),
-    ).toEqual({ assessments: [] });
+    ).toEqual({ assessments: [], summary: "No findings were supplied; this is not a safety certification." });
     const init = fetcher.mock.calls[0] as unknown as [URL, RequestInit];
     expect(JSON.parse(init[1].body as string).stream).toBe(false);
   });

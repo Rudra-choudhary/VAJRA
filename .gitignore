@@ -8,3 +8,6 @@ coverage/
 .vajra/
 *.sqlite*
 .DS_Store
+.pptx-build/
+.pptx-output/
+presentations/~$*

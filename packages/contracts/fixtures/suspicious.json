@@ -243,7 +243,8 @@
       ],
       "model": {
         "id": "fixture-only-not-an-ai-model",
-        "status": "used"
+        "status": "used",
+        "summary": "Synthetic development fixture summary; this is not a real model result."
       },
       "toolVersion": "0.1.0",
       "rulesVersion": "1",

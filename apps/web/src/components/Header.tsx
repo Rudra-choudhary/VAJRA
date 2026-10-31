@@ -33,7 +33,7 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="brand-titles">
             <h1 className="brand-name">VAJRA</h1>
             <span className="brand-tagline">
-              Package vs Source Integrity Analyzer
+              Compare package files with their source
             </span>
           </div>
         </div>
@@ -47,7 +47,7 @@ export const Header: React.FC<HeaderProps> = ({
               />
               <span className="transport-label">
                 {isMock ? (
-                  <strong className="text-warning">Contract Fixtures</strong>
+                  <strong className="text-warning">Demo mode</strong>
                 ) : (
                   <span>
                     Live API:{" "}
@@ -73,14 +73,14 @@ export const Header: React.FC<HeaderProps> = ({
                   : "Switch to contract fixtures"
               }
             >
-              {isMock ? "Switch to Live API" : "Switch to Fixtures"}
+              {isMock ? "Live API" : "Demo data"}
             </button>
           </div>
 
           {isMock && (
             <div className="fixture-picker">
               <label htmlFor="fixture-select" className="fixture-label">
-                Demo Fixture:
+                Example:
               </label>
               <select
                 id="fixture-select"
@@ -105,10 +105,7 @@ export const Header: React.FC<HeaderProps> = ({
             ⓘ
           </span>
           <span className="notice-text">
-            <strong>Demonstration Fixture Active:</strong> Displaying synthetic
-            contract data (
-            {FIXTURES[selectedFixtureId]?.description ?? "Development fixture"}
-            ). Never represents a live assessment.
+            <strong>Demo data only.</strong> No live package or model analysis was run.
           </span>
         </div>
       )}
@@ -122,10 +119,7 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={() => onTabChange("review")}
             id="tab-review"
           >
-            <span className="tab-icon" aria-hidden="true">
-              🔍
-            </span>
-            <span>Review & Analysis</span>
+            <span>Review</span>
           </button>
           <button
             role="tab"
@@ -134,10 +128,7 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={() => onTabChange("history")}
             id="tab-history"
           >
-            <span className="tab-icon" aria-hidden="true">
-              🕒
-            </span>
-            <span>Analysis History</span>
+            <span>History</span>
           </button>
           <button
             role="tab"
@@ -146,9 +137,6 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={() => onTabChange("watchlist")}
             id="tab-watchlist"
           >
-            <span className="tab-icon" aria-hidden="true">
-              👁
-            </span>
             <span>Watchlist</span>
           </button>
         </div>

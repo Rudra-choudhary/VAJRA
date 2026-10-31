@@ -22,6 +22,6 @@ Metadata `name`, `version`, `repository` and `gitHead` comes from the exact regi
 
 Use `analyze(request, dependencies, onProgress)` from `@vajra/engine`. Supply an analysis ID, ingestion adapter, workspace directory, upload resolver and `saveFileDetail` callback. The engine returns an already validated report. Persist that report and the terminal job status together. A thrown error means failed analysis; do not turn it into a clean report. Delete partial file-detail writes after persistence failures.
 
-Cancellation propagates; model timeout alone preserves deterministic results in a partial report. `saveFileDetail` must persist content under analysis ID and file ID without exposing filesystem paths. Set `model` using `createOllamaClient`; missing models deliberately produce partial results. The engine does not call a cloud fallback.
+Cancellation propagates; model timeout alone preserves deterministic results in a partial report. `saveFileDetail` must persist content under analysis ID and file ID without exposing filesystem paths. The server configures Qwen through `createOllamaClient` by default; missing models deliberately produce partial results. The engine does not call a cloud fallback.
 
 Schema fields and HTTP routes are in `VAJRA_TEAM_PRD.md`. Before editing shared contracts or dependency manifests, coordinate with Rudra. Additional adapter types are exported through the same package.
