@@ -1,0 +1,14 @@
+{
+  "name": "@vajra/server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@vajra/contracts": "0.1.0",
+    "@vajra/engine": "0.1.0",
+    "@vajra/storage": "0.1.0",
+    "@vajra/reports": "0.1.0",
+    "fastify": "5.12.7",
+    "@fastify/multipart": "10.1.6"
+  }
+}

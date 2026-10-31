@@ -28,7 +28,7 @@ Vajra compares published npm packages with their source code, flags suspicious c
 | [Gemma](https://ai.google.dev/gemma/docs) | Open-weight model family selected for explaining package/source differences and producing readable, evidence-backed findings. Exact variant and runtime will be recorded after validation. |
 | [Qwen2.5-Coder-7B-Instruct](https://huggingface.co/Qwen/Qwen2.5-Coder-7B-Instruct) | Apache-2.0-licensed coding model selected for contextual analysis of code diffs and suspicious modifications. |
 
-These are planned model selections; neither is integrated yet. Runtime configuration and actual usage will be documented when implemented. Meaningful model integration remains required before submission.
+The engine now includes an Ollama adapter with structured-output and evidence validation. A live integration check used the already-installed `qwen3.5:latest` model on a controlled tampering fixture; it is distinct from the planned Qwen2.5 model above. Gemma 4 E4B is being downloaded for local comparison. The exact tested Gemma runtime and results will be recorded after validation. Full application integration remains in progress.
 
 ## AI coding assistants
 
