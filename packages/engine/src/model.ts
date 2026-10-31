@@ -272,7 +272,11 @@ export function createOllamaClient(options: {
               { role: "system", content: input.system },
               { role: "user", content: input.prompt },
             ],
-            options: { temperature: 0, num_ctx: 8192, num_predict: 2048 },
+            // Leave enough room for a structured response after large package
+            // diffs have consumed most of the prompt context. With 8k context,
+            // real package reviews could leave only a few hundred tokens for
+            // the JSON response and Ollama would truncate it.
+            options: { temperature: 0, num_ctx: 16384, num_predict: 2048 },
             keep_alive: "2m",
           }),
         },
@@ -308,8 +312,14 @@ export function createOllamaClient(options: {
         .object({
           model: z.string().optional(),
           message: z.object({ content: z.string() }),
+          done_reason: z.string().optional(),
         })
         .parse(JSON.parse(Buffer.concat(chunks).toString("utf8")));
+      if (envelope.done_reason === "length")
+        throw new EngineError(
+          "MODEL_OUTPUT_TRUNCATED",
+          "Model response was truncated at its generation limit",
+        );
       return JSON.parse(envelope.message.content) as unknown;
     },
   };

@@ -11,7 +11,6 @@ import { Badge } from "./Common.js";
 export interface EvidenceReviewProps {
   findings: Finding[];
   files: FileSummary[];
-  model: { id: string | null; status: "used" | "failed" | "not_configured"; summary?: string };
   selectedFileId: string | null;
   onSelectEvidence: (evidence: EvidenceRef) => void;
   onSelectFile: (fileId: string) => void;
@@ -20,7 +19,6 @@ export interface EvidenceReviewProps {
 export const EvidenceReview: React.FC<EvidenceReviewProps> = ({
   findings,
   files,
-  model,
   selectedFileId,
   onSelectEvidence,
   onSelectFile,
@@ -235,15 +233,6 @@ export const EvidenceReview: React.FC<EvidenceReviewProps> = ({
               </article>
             );
           })
-        )}
-        {model.status === "used" && model.summary && !model.id?.startsWith("fixture-only") && (
-          <section className="model-summary-card" aria-label="Overall model summary">
-            <div className="model-summary-heading">
-              <h4>{model.id?.toLowerCase().startsWith("qwen") ? "Qwen summary" : "AI summary"}</h4>
-              <span>Model-generated · Unverified</span>
-            </div>
-            <p>{model.summary}</p>
-          </section>
         )}
       </div>
     </div>
