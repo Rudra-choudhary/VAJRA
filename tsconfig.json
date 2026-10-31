@@ -6,6 +6,15 @@
     },
     {
       "path": "packages/engine"
+    },
+    {
+      "path": "packages/ingestion"
+    },
+    {
+      "path": "packages/storage"
+    },
+    {
+      "path": "packages/reports"
     }
   ]
 }

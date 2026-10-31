@@ -1,12 +1,20 @@
 import { DatabaseSync } from "node:sqlite";
 import { mkdirSync } from "node:fs";
 import { dirname } from "node:path";
-import type { AnalysisJob, AnalysisReport, FileDetail, WatchEntry } from "@vajra/contracts";
+import type {
+  AnalysisJob,
+  AnalysisReport,
+  FileDetail,
+  WatchEntry,
+} from "@vajra/contracts";
 
 export interface Storage {
   saveJob(job: AnalysisJob): void;
   getJob(id: string): AnalysisJob | null;
-  listJobs(limit: number, cursor: string | null): { items: AnalysisJob[]; nextCursor: string | null };
+  listJobs(
+    limit: number,
+    cursor: string | null,
+  ): { items: AnalysisJob[]; nextCursor: string | null };
   saveReport(report: AnalysisReport): void;
   getReport(id: string): AnalysisReport | null;
   saveFileDetail(analysisId: string, fileId: string, detail: FileDetail): void;
@@ -27,21 +35,42 @@ export function createStorage(dbPath: string): Storage {
     CREATE TABLE IF NOT EXISTS file_details (analysis_id TEXT NOT NULL, file_id TEXT NOT NULL, body TEXT NOT NULL, PRIMARY KEY (analysis_id, file_id));
     CREATE TABLE IF NOT EXISTS watchlist (id TEXT PRIMARY KEY, body TEXT NOT NULL);
   `);
-  const getJobStmt = db.prepare("SELECT status, stage, report, error FROM jobs WHERE id = ?");
-  const insertJob = db.prepare("INSERT INTO jobs (id,status,stage,report,error,created_at) VALUES (?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET status=excluded.status,stage=excluded.stage,report=excluded.report,error=excluded.error");
-  const listJobsStmt = db.prepare("SELECT id,status,stage,report,error,created_at FROM jobs WHERE (? IS NULL OR created_at < (SELECT created_at FROM jobs WHERE id = ?)) ORDER BY created_at DESC LIMIT ?");
-  const insertReport = db.prepare("INSERT INTO reports (id,body) VALUES (?,?) ON CONFLICT(id) DO UPDATE SET body=excluded.body");
+  const getJobStmt = db.prepare(
+    "SELECT status, stage, report, error FROM jobs WHERE id = ?",
+  );
+  const insertJob = db.prepare(
+    "INSERT INTO jobs (id,status,stage,report,error,created_at) VALUES (?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET status=excluded.status,stage=excluded.stage,report=excluded.report,error=excluded.error",
+  );
+  const listJobsStmt = db.prepare(
+    "SELECT id,status,stage,report,error,created_at FROM jobs WHERE (? IS NULL OR created_at < (SELECT created_at FROM jobs WHERE id = ?)) ORDER BY created_at DESC LIMIT ?",
+  );
+  const insertReport = db.prepare(
+    "INSERT INTO reports (id,body) VALUES (?,?) ON CONFLICT(id) DO UPDATE SET body=excluded.body",
+  );
   const getReportStmt = db.prepare("SELECT body FROM reports WHERE id = ?");
-  const insertDetail = db.prepare("INSERT INTO file_details (analysis_id,file_id,body) VALUES (?,?,?) ON CONFLICT(analysis_id,file_id) DO UPDATE SET body=excluded.body");
-  const getDetailStmt = db.prepare("SELECT body FROM file_details WHERE analysis_id = ? AND file_id = ?");
+  const insertDetail = db.prepare(
+    "INSERT INTO file_details (analysis_id,file_id,body) VALUES (?,?,?) ON CONFLICT(analysis_id,file_id) DO UPDATE SET body=excluded.body",
+  );
+  const getDetailStmt = db.prepare(
+    "SELECT body FROM file_details WHERE analysis_id = ? AND file_id = ?",
+  );
   const listWatchStmt = db.prepare("SELECT body FROM watchlist");
-  const upsertWatchStmt = db.prepare("INSERT INTO watchlist (id,body) VALUES (?,?) ON CONFLICT(id) DO UPDATE SET body=excluded.body");
+  const upsertWatchStmt = db.prepare(
+    "INSERT INTO watchlist (id,body) VALUES (?,?) ON CONFLICT(id) DO UPDATE SET body=excluded.body",
+  );
   const getWatchStmt = db.prepare("SELECT body FROM watchlist WHERE id = ?");
   const deleteWatchStmt = db.prepare("DELETE FROM watchlist WHERE id = ?");
 
   return {
     saveJob(job) {
-      insertJob.run(job.id, job.status, job.stage, job.report ? JSON.stringify(job.report) : null, job.error ? JSON.stringify(job.error) : null, new Date().toISOString());
+      insertJob.run(
+        job.id,
+        job.status,
+        job.stage,
+        job.report ? JSON.stringify(job.report) : null,
+        job.error ? JSON.stringify(job.error) : null,
+        new Date().toISOString(),
+      );
     },
     getJob(id) {
       const row = getJobStmt.get(id) as any;
@@ -81,7 +110,9 @@ export function createStorage(dbPath: string): Storage {
       return row ? (JSON.parse(row.body) as FileDetail) : null;
     },
     listWatch() {
-      return (listWatchStmt.all() as any[]).map((r) => JSON.parse(r.body) as WatchEntry);
+      return (listWatchStmt.all() as any[]).map(
+        (r) => JSON.parse(r.body) as WatchEntry,
+      );
     },
     upsertWatch(entry) {
       upsertWatchStmt.run(entry.id, JSON.stringify(entry));

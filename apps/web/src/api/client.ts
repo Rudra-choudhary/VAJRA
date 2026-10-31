@@ -92,8 +92,8 @@ export class HttpVajraClient implements VajraTransport {
     purpose: "package" | "source",
   ): Promise<UploadResult> {
     const formData = new FormData();
-    formData.append("file", file);
     formData.append("purpose", purpose);
+    formData.append("file", file);
 
     const res = await fetch(`${this.baseUrl}/api/uploads`, {
       method: "POST",
