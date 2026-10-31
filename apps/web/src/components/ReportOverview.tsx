@@ -20,6 +20,13 @@ export const ReportOverview: React.FC<ReportOverviewProps> = ({
     low: report.findings.filter((f) => f.severity === "low").length,
     info: report.findings.filter((f) => f.severity === "info").length,
   };
+  const limitations = [
+    ...new Set([
+      ...report.coverage.reasons,
+      ...report.source.limitations,
+      ...(report.model.reason ? [report.model.reason] : []),
+    ]),
+  ];
   const copyDigest = async () => {
     await navigator.clipboard.writeText(report.artifact.sha256);
     setCopied(true);
@@ -122,11 +129,11 @@ export const ReportOverview: React.FC<ReportOverviewProps> = ({
         </span>
       </div>
 
-      {(report.coverage.reasons.length > 0 || report.source.limitations.length > 0 || report.model.reason) && (
+      {limitations.length > 0 && (
         <details className="simple-limitations">
           <summary>Limitations and skipped analysis</summary>
           <ul>
-            {[...report.coverage.reasons, ...report.source.limitations, ...(report.model.reason ? [report.model.reason] : [])].map((reason, i) => <li key={`${i}-${reason}`}>{reason}</li>)}
+            {limitations.map((reason) => <li key={reason}>{reason}</li>)}
           </ul>
         </details>
       )}
