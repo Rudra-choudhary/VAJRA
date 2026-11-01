@@ -21,6 +21,17 @@ npm run check
 
 Start the local API with `npx tsx apps/server/src/index.ts` (defaults to `127.0.0.1:3000`). Start the web UI with `npm run dev -w apps/web`; configure its API base URL as documented by the web client. The server uses `./data/vajra.db` and `./data/uploads` by default.
 
+## Deploy with Vercel and Render
+
+Vercel serves the built React app. Render runs the Fastify API and keeps its SQLite database, uploads, and analysis workspaces on a persistent disk. The Vercel rewrite sends `/api/*` requests to the Render API, so the browser uses one origin and does not need a CORS exception.
+
+1. Create the API from this repository using Render Blueprint and `render.yaml`. The blueprint uses a persistent disk and sets `VAJRA_MODEL=none`, so production runs deterministic checks without Ollama. Reports will indicate that the model is not configured. Local startup still uses `qwen3.5:latest` by default.
+2. Confirm the Render service URL is `https://vajra-api.onrender.com`. If Render assigns a different URL, update the API rewrite destination in `vercel.json` to that URL before deploying the frontend.
+3. Import the same repository into Vercel. Keep the project root at the repository root. `vercel.json` sets the install command, Vite build command, output directory, API proxy, and SPA fallback.
+4. After both services deploy, open the Vercel URL and check `/api/health`. Keep the Render persistent disk attached. Back it up before removing or replacing the service.
+
+The Render blueprint uses the Starter plan because the API needs persistent disk storage. Vajra currently has no user sign-in or access control. For a private team demo, enable Vercel Deployment Protection or put the site behind an authentication layer. Do not expose the app publicly without access control.
+
 The server uses `qwen3.5:latest` through a local Ollama server by default. Qwen reviews selected findings with bounded file and diff context, adds a plain-language interpretation, and lists uncertainty. Rule findings and their evidence remain authoritative; Qwen cannot invent evidence locations. Install the model with `ollama pull qwen3.5:latest`. Override the model with `VAJRA_MODEL`, or set `VAJRA_MODEL=none` to disable model calls. If Ollama is unavailable, deterministic findings are retained and the report records model failure and partial status. The recorded Qwen live smoke check is a functionality check, not a quality benchmark.
 
 ## Known limitations

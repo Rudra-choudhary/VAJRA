@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: vajra-api
+    runtime: node
+    plan: starter
+    buildCommand: npm ci --include=dev --ignore-scripts && npm run build
+    startCommand: npx tsx apps/server/src/index.ts
+    healthCheckPath: /api/health
+    disk:
+      name: vajra-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: HOST
+        value: 0.0.0.0
+      - key: VAJRA_MODEL
+        value: none
+      - key: VAJRA_DB
+        value: /var/data/vajra.db
+      - key: VAJRA_UPLOADS
+        value: /var/data/uploads
+      - key: VAJRA_WORKSPACE
+        value: /var/data/workspaces
