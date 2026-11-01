@@ -1,0 +1,8 @@
+{
+  "case": "tampered-env-network",
+  "expected": "Potential tampering detected",
+  "details": "Adds a static signal that reads an environment token and sends it to a reserved .invalid domain; the code is never executed.",
+  "packageArchive": "package.tgz",
+  "sourceArchive": "source.tgz",
+  "safeToInstall": false
+}
