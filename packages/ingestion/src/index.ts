@@ -60,10 +60,10 @@ export function createIngestionAdapter(
         | { uploadId: string; purpose: "source" },
       context: AdapterContext,
     ): Promise<ArtifactSnapshot | SourceSnapshot> => {
-      if (input.purpose === "package") {
-        return inspectUploadedArchive(input, context);
-      }
-      return inspectUploadedArchive(input, context);
+      return inspectUploadedArchive(
+        input as { uploadId: string; purpose: "package" },
+        context,
+      );
     }) as IngestionAdapter["inspectUploadedArchive"],
 
     async resolveGithubRef(

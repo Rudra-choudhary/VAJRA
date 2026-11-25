@@ -1,4 +1,82 @@
-# Vajra: 10-hour delivery roadmap
+# Vajra product roadmap: V1 web MVP and V2 terminal tool
+
+This is the active product plan. V1 makes Vajra's web experience clear, reliable, and ready for a controlled live demo. V2 adds terminal workflows after the web product is stable. The original hackathon plan is retained below as project history and is not the current release scope.
+
+## V1: clear, reliable web product
+
+### Goal
+
+Let a developer or judge submit an npm package and its likely source, understand the comparison result quickly, inspect the evidence, and export a useful report. V1 stays focused on npm and the web UI. It does not intercept package installs in a terminal.
+
+### Work plan
+
+1. **Lock the release scope and user journey**
+   - Confirm the supported inputs: npm name and exact version, uploaded package archive, and optional source repository/revision override.
+   - Document how automatic source resolution works and show when its result is uncertain.
+   - Define the report states: potential tampering, no suspicious differences found, and inconclusive/partial.
+
+2. **Improve the UI around the review task**
+   - Make the first screen guide users through package input, source selection, and starting analysis.
+   - Show progress in plain language: fetching package, identifying source, comparing files, checking behavior, and preparing report.
+   - Put a prominent result status at the top of the report, followed by the short summary and the most important evidence.
+   - Separate exact file differences from suspicious behavior signals. A hash mismatch alone must not be presented as proof of tampering.
+   - Make coverage, skipped files, source-match confidence, and model availability visible near the conclusion.
+   - Make each finding easy to scan: what changed, why it matters, evidence, severity, and confidence.
+   - Keep file search and side-by-side diffs available for deeper inspection without crowding the overview.
+   - Refine the existing light theme, typography, spacing, colors, button labels, and responsive layouts. Meet keyboard navigation and readable contrast needs.
+   - Finish loading, empty, validation, network failure, partial analysis, and model-unavailable states.
+
+3. **Make analysis and reports dependable**
+   - Preserve deterministic checks and report generation when Qwen is unavailable; label model output as unavailable or partial instead of implying it ran.
+   - Keep the summary close to the report verdict and include it in Markdown/JSON exports when available.
+   - Ensure API errors and timeouts explain what the user can try next.
+   - Keep analysis history and report data available through the deployed service's restart lifecycle.
+
+4. **Prepare a controlled V1 deployment and demo**
+   - Deploy the web app to Vercel and the API to Render using environment-based configuration.
+   - Add a deployment access policy appropriate for the intended audience and ensure the API cannot be unintentionally exposed without it.
+   - Confirm health reporting, CORS, persistence, upload limits, and production error handling.
+   - Provide a guided demo with three tampered and two clean sample packages, clearly labeled as test cases.
+
+5. **Document and release**
+   - Update the README with the V1 workflow, deployment setup, supported inputs, interpretation of results, and known limitations.
+   - Include screenshots and example reports for one tampered and one clean sample.
+   - Record evaluation results and clearly distinguish tested cases from claims about real-world detection.
+
+### V1 acceptance criteria
+
+- A first-time user can submit a supported package and reach a report without developer help.
+- The report states the outcome and its limits at the top; the user can find the summary immediately.
+- The user can inspect the source identity, coverage, skipped files, findings, and file-level evidence.
+- Clean, suspicious, partial, and model-unavailable outcomes are distinct and understandable.
+- The demo environment works after service restarts, and its access configuration is intentional.
+- The five prepared demo packages produce documented, reviewable outputs.
+
+## V2: terminal workflow and broader integrations
+
+- Build a standalone `vajra` CLI that reuses the V1 analysis engine and report schema.
+- Add an explicit command such as `vajra check <package>` and a clear warning format with a link or path to the full report.
+- Explore npm install integration only after defining safe behavior, opt-in controls, latency limits, offline behavior, and how to avoid changing normal installs unexpectedly.
+- Add lockfile/project scanning, CI usage, policy configuration, and broader package ecosystems only after the core terminal flow is validated.
+- Keep installation hooks and package code unexecuted during analysis.
+
+## Suggested delivery order
+
+| Phase | Main outcome | Exit condition |
+| --- | --- | --- |
+| 1. Define | Confirm V1 scope, report language, and user journey | Inputs and result states are written down |
+| 2. UI | Simplify submission, progress, and report review | Users can identify verdict, summary, and evidence quickly |
+| 3. Reliability | Close API, persistence, and graceful-degradation gaps | Partial results and service errors are explicit and recoverable |
+| 4. Deploy | Configure Vercel and Render for the intended demo audience | Hosted flow works with the sample set and intended access policy |
+| 5. Release | Publish setup, limitations, and measured examples | A new user can reproduce the demo and understand its limits |
+
+---
+
+## Original hackathon delivery plan (historical)
+
+The sections below preserve the initial hackathon scope and ownership notes. They describe the original build plan, not the current V1/V2 release commitment.
+
+### Original 10-hour delivery roadmap
 
 Selected problem: **04 — Published Package vs Source Code Integrity Analyzer**.
 

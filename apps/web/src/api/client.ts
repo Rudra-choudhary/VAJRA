@@ -118,17 +118,18 @@ export class HttpVajraClient implements VajraTransport {
     const res = await fetch(
       `${this.baseUrl}/api/analyses/${encodeURIComponent(id)}`,
     );
-    const raw: any = await this.handleResponse(res);
+    const raw: unknown = await this.handleResponse(res);
 
     // Resilient shape normalization (handles D1 missing stage or server omission)
     if (raw && typeof raw === "object") {
-      if (!raw.stage) {
-        if (raw.status === "completed" || raw.status === "partial") {
-          raw.stage = "done";
-        } else if (raw.status === "queued") {
-          raw.stage = "queued";
+      const record = raw as Record<string, unknown>;
+      if (!record.stage) {
+        if (record.status === "completed" || record.status === "partial") {
+          record.stage = "done";
+        } else if (record.status === "queued") {
+          record.stage = "queued";
         } else {
-          raw.stage = "retrieving";
+          record.stage = "retrieving";
         }
       }
     }
@@ -147,15 +148,22 @@ export class HttpVajraClient implements VajraTransport {
     const qs = query.toString();
     const url = `${this.baseUrl}/api/analyses${qs ? `?${qs}` : ""}`;
     const res = await fetch(url);
-    const raw: any = await this.handleResponse(res);
+    const raw: unknown = await this.handleResponse(res);
 
     // Normalize SQL nulls to undefined for contract schema compatibility
-    if (raw && Array.isArray(raw.items)) {
-      raw.items = raw.items.map((item: any) => ({
-        ...item,
-        name: item.name ?? undefined,
-        version: item.version ?? undefined,
-      }));
+    if (raw && typeof raw === "object") {
+      const record = raw as Record<string, unknown>;
+      if (Array.isArray(record.items)) {
+        record.items = record.items.map((item: unknown) => {
+          if (!item || typeof item !== "object") return item;
+          const entry = item as Record<string, unknown>;
+          return {
+            ...entry,
+            name: entry.name ?? undefined,
+            version: entry.version ?? undefined,
+          };
+        });
+      }
     }
 
     return ListAnalysesSchema.parse(raw);

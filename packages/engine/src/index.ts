@@ -8,7 +8,10 @@ import {
   type AnalyzeDependencies,
   type ProgressHandler,
   type ArtifactSnapshot,
+  type FileDetail,
+  type Finding,
   type Limits,
+  type ModelClient,
 } from "@vajra/contracts";
 import {
   ContentReader,
@@ -30,6 +33,131 @@ export { resolveSource } from "./source.js";
 export { compare } from "./compare.js";
 export { runRules } from "./rules.js";
 
+interface ModelAssessmentResult {
+  findings: Finding[];
+  limitations: string[];
+  model: AnalysisReport["model"];
+}
+
+/**
+ * Runs the optional model assessment stage with a bounded timeout and abort
+ * propagation. Never throws on model or validation failures; instead records
+ * the failure reason in the returned `model` status.
+ */
+async function assessWithModel(params: {
+  findings: Finding[];
+  details: FileDetail[];
+  modelClient: ModelClient | undefined;
+  limits: Limits;
+  signal: AbortSignal;
+  timeoutMs: number;
+  artifact: { name: string | undefined; version: string | undefined };
+  source: { method: string; confidence: string };
+  limitations: string[];
+}): Promise<ModelAssessmentResult> {
+  const { findings, details, modelClient, limits, signal, timeoutMs } = params;
+  if (!modelClient) {
+    return {
+      findings,
+      limitations: [],
+      model: {
+        id: null,
+        status: "not_configured",
+        reason: "No model configured; deterministic checks only",
+      },
+    };
+  }
+
+  if (!Number.isFinite(timeoutMs) || timeoutMs < 1) {
+    return {
+      findings,
+      limitations: [],
+      model: {
+        id: modelClient.id,
+        status: "failed",
+        reason: "Model timeout must be positive",
+      },
+    };
+  }
+
+  const controller = new AbortController();
+  const modelSignal = AbortSignal.any([signal, controller.signal]);
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  let onAbort: (() => void) | undefined;
+
+  const comparedFiles = details.filter(
+    (d) => d.file.status !== "skipped",
+  ).length;
+  const skippedFiles = details.length - comparedFiles;
+
+  try {
+    const interrupted = new Promise<never>((_, reject) => {
+      onAbort = () => reject(modelSignal.reason ?? new Error("Aborted"));
+      modelSignal.addEventListener("abort", onAbort, { once: true });
+      timer = setTimeout(
+        () =>
+          controller.abort(
+            new EngineError("MODEL_TIMEOUT", "Model assessment timed out"),
+          ),
+        timeoutMs,
+      );
+      if (modelSignal.aborted) onAbort();
+    });
+
+    const result = await Promise.race([
+      explain(findings, details, modelClient, limits, modelSignal, {
+        artifact: params.artifact,
+        source: params.source,
+        coverage: {
+          totalFiles: details.length,
+          comparedFiles,
+          skippedFiles,
+        },
+        limitations: params.limitations,
+        findingCounts: Object.fromEntries(
+          ["high", "medium", "low", "info"].map((severity) => [
+            severity,
+            findings.filter((finding) => finding.severity === severity).length,
+          ]),
+        ),
+      }),
+      interrupted,
+    ]);
+
+    return {
+      findings: result.findings,
+      limitations: result.limitations,
+      model: { id: modelClient.id, status: "used", summary: result.summary },
+    };
+  } catch (error) {
+    signal.throwIfAborted();
+    return {
+      findings,
+      limitations: [],
+      model: {
+        id: modelClient.id,
+        status: "failed",
+        reason:
+          error instanceof EngineError
+            ? error.message
+            : "Model response failed validation or could not be retrieved",
+      },
+    };
+  } finally {
+    if (timer) clearTimeout(timer);
+    if (onAbort) modelSignal.removeEventListener("abort", onAbort);
+    controller.abort();
+  }
+}
+
+/**
+ * Executes the full package-vs-source integrity analysis pipeline:
+ * 1. Validate request, limits, and fetch/inspect the published artifact.
+ * 2. Resolve the corresponding source snapshot (explicit commit, upload, or auto).
+ * 3. Compare file trees, compute diffs, and run deterministic security rules.
+ * 4. Optionally enrich findings and generate a summary using the configured model.
+ * 5. Validate and persist file details, then return the contract-compliant report.
+ */
 export async function analyze(
   raw: unknown,
   deps: AnalyzeDependencies,
@@ -47,6 +175,13 @@ export async function analyze(
         "INVALID_LIMITS",
         "Limits must be positive integers",
       );
+  const timeoutMs = deps.modelTimeoutMs ?? 90000;
+  if (deps.model && (!Number.isFinite(timeoutMs) || timeoutMs < 1)) {
+    throw new EngineError(
+      "INVALID_LIMITS",
+      "Model timeout must be positive",
+    );
+  }
   const context = {
     signal,
     limits,
@@ -57,6 +192,8 @@ export async function analyze(
     signal.throwIfAborted();
     await onProgress(stage);
   };
+
+  // Stage 1: Retrieve and validate artifact
   await progress("retrieving");
   const artifact: ArtifactSnapshot =
     request.artifact.kind === "npm"
@@ -101,6 +238,8 @@ export async function analyze(
     },
     readText: artifact.readText.bind(artifact),
   };
+
+  // Stage 2: Resolve source repository/archive
   await progress("resolving");
   const source = await resolveSource(
     request,
@@ -109,6 +248,8 @@ export async function analyze(
     context,
     reader,
   );
+
+  // Stage 3: Compare files and run deterministic rules
   await progress("comparing");
   const comparison = await compare(
     input,
@@ -132,83 +273,30 @@ export async function analyze(
     reasons.push(...source.resolution.limitations);
   if (comparison.details.some((d) => d.file.status === "skipped"))
     reasons.push("Some changed files could not be fully inspected");
+
+  // Stage 4: Optional model assessment
   await progress("assessing");
-  let model: AnalysisReport["model"] = {
-    id: deps.model?.id ?? null,
-    status: "not_configured",
-    reason: "No model configured; deterministic checks only",
-  };
-  if (deps.model) {
-    const controller = new AbortController();
-    const modelSignal = AbortSignal.any([signal, controller.signal]);
-    let timer: ReturnType<typeof setTimeout> | undefined;
-    let onAbort: (() => void) | undefined;
-    try {
-      const timeout = deps.modelTimeoutMs ?? 90000;
-      if (!Number.isFinite(timeout) || timeout < 1)
-        throw new EngineError(
-          "INVALID_LIMITS",
-          "Model timeout must be positive",
-        );
-      const interrupted = new Promise<never>((_, reject) => {
-        onAbort = () => reject(modelSignal.reason ?? new Error("Aborted"));
-        modelSignal.addEventListener("abort", onAbort, { once: true });
-        timer = setTimeout(
-          () =>
-            controller.abort(
-              new EngineError("MODEL_TIMEOUT", "Model assessment timed out"),
-            ),
-          timeout,
-        );
-        if (modelSignal.aborted) onAbort();
-      });
-      const result = await Promise.race([
-        explain(findings, comparison.details, deps.model, limits, modelSignal, {
-          artifact: { name, version },
-          source: {
-            method: source.resolution.method,
-            confidence: source.resolution.confidence,
-          },
-          coverage: {
-            totalFiles: comparison.details.length,
-            comparedFiles: comparison.details.filter(
-              (d) => d.file.status !== "skipped",
-            ).length,
-            skippedFiles: comparison.details.filter(
-              (d) => d.file.status === "skipped",
-            ).length,
-          },
-          limitations: reasons,
-          findingCounts: Object.fromEntries(
-            ["high", "medium", "low", "info"].map((severity) => [
-              severity,
-              findings.filter((finding) => finding.severity === severity).length,
-            ]),
-          ),
-        }),
-        interrupted,
-      ]);
-      findings = result.findings;
-      reasons.push(...result.limitations);
-      model = { id: deps.model.id, status: "used", summary: result.summary };
-    } catch (error) {
-      signal.throwIfAborted();
-      model = {
-        id: deps.model.id,
-        status: "failed",
-        reason:
-          error instanceof EngineError
-            ? error.message
-            : "Model response failed validation or could not be retrieved",
-      };
-    } finally {
-      if (timer) clearTimeout(timer);
-      if (onAbort) modelSignal.removeEventListener("abort", onAbort);
-      controller.abort();
-    }
-  }
+  const assessment = await assessWithModel({
+    findings,
+    details: comparison.details,
+    modelClient: deps.model,
+    limits,
+    signal,
+    timeoutMs,
+    artifact: { name, version },
+    source: {
+      method: source.resolution.method,
+      confidence: source.resolution.confidence,
+    },
+    limitations: reasons,
+  });
+  findings = assessment.findings;
+  reasons.push(...assessment.limitations);
+  const model = assessment.model;
   if (model.status !== "used")
     reasons.push(model.reason ?? "Model assessment incomplete");
+
+  // Stage 5: Validate evidence, persist file details, and assemble report
   for (const f of findings)
     for (const e of f.evidence) validateEvidence(e, comparison.details);
   for (const detail of comparison.details) {

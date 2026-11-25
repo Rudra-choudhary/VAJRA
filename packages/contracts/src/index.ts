@@ -1,12 +1,18 @@
 import { z } from "zod";
 
+// ---------------------------------------------------------------------------
+// Primitives & Identifiers
+// ---------------------------------------------------------------------------
+
 export const IdSchema = z
   .string()
   .min(1)
   .max(128)
   .regex(/^[a-zA-Z0-9_-]+$/);
+
 export const HashSchema = z.string().regex(/^[a-f0-9]{64}$/);
 export const CommitSchema = z.string().regex(/^[a-f0-9]{40}$/i);
+
 export const LogicalPathSchema = z
   .string()
   .min(1)
@@ -20,15 +26,19 @@ export const LogicalPathSchema = z
       p.split("/").every((s) => s !== "" && s !== "." && s !== ".."),
     "Unsafe logical path",
   );
+
 export const PackageRootSchema = z.union([z.literal(""), LogicalPathSchema]);
+
 export const NpmNameSchema = z
   .string()
   .max(214)
   .regex(/^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/);
+
 export const ExactVersionSchema = z
   .string()
   .max(100)
   .regex(/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/);
+
 export const GithubUrlSchema = z
   .string()
   .url()
@@ -45,6 +55,11 @@ export const GithubUrlSchema = z
       /^\/[\w.-]+\/[\w.-]+(?:\.git)?\/?$/.test(u.pathname)
     );
   }, "Use an HTTPS github.com owner/repository URL");
+
+// ---------------------------------------------------------------------------
+// Pipeline & Finding Enums
+// ---------------------------------------------------------------------------
+
 export const StageSchema = z.enum([
   "queued",
   "retrieving",
@@ -53,6 +68,7 @@ export const StageSchema = z.enum([
   "assessing",
   "done",
 ]);
+
 export const JobStatusSchema = z.enum([
   "queued",
   "running",
@@ -60,8 +76,10 @@ export const JobStatusSchema = z.enum([
   "partial",
   "failed",
 ]);
+
 export const ConfidenceSchema = z.enum(["high", "medium", "low"]);
 export const SeveritySchema = z.enum(["info", "low", "medium", "high"]);
+
 export const ClassificationSchema = z.enum([
   "exact_match",
   "explained_packaging",
@@ -69,6 +87,11 @@ export const ClassificationSchema = z.enum([
   "suspicious_change",
   "unresolved",
 ]);
+
+// ---------------------------------------------------------------------------
+// Analysis Request Inputs
+// ---------------------------------------------------------------------------
+
 export const ArtifactInputSchema = z.discriminatedUnion("kind", [
   z
     .object({
@@ -79,6 +102,7 @@ export const ArtifactInputSchema = z.discriminatedUnion("kind", [
     .strict(),
   z.object({ kind: z.literal("upload"), uploadId: IdSchema }).strict(),
 ]);
+
 export const SourceInputSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("auto") }).strict(),
   z
@@ -97,9 +121,15 @@ export const SourceInputSchema = z.discriminatedUnion("kind", [
     })
     .strict(),
 ]);
+
 export const AnalysisRequestSchema = z
   .object({ artifact: ArtifactInputSchema, source: SourceInputSchema })
   .strict();
+
+// ---------------------------------------------------------------------------
+// Report, Findings & Evidence
+// ---------------------------------------------------------------------------
+
 export const EvidenceRefSchema = z
   .object({
     fileId: IdSchema,
@@ -117,6 +147,7 @@ export const EvidenceRefSchema = z
         e.endLine >= e.startLine),
     "Line range must have valid start and end",
   );
+
 export const FindingSchema = z
   .object({
     id: IdSchema,
@@ -131,6 +162,7 @@ export const FindingSchema = z
     limitations: z.array(z.string().max(1024)).max(100),
   })
   .strict();
+
 export const FileSummarySchema = z
   .object({
     id: IdSchema,
@@ -148,6 +180,7 @@ export const FileSummarySchema = z
     (f) => f.packagePath !== undefined || f.sourcePath !== undefined,
     "File must have a side",
   );
+
 export const SourceResolutionSchema = z
   .object({
     repositoryUrl: GithubUrlSchema.optional(),
@@ -160,6 +193,7 @@ export const SourceResolutionSchema = z
     limitations: z.array(z.string()),
   })
   .strict();
+
 export const AnalysisReportSchema = z
   .object({
     schemaVersion: z.literal(1),
@@ -253,6 +287,7 @@ export const AnalysisReportSchema = z
     )
       fail("Incomplete analysis cannot be completed");
   });
+
 export const FileDetailSchema = z
   .object({
     file: FileSummarySchema,
@@ -262,9 +297,15 @@ export const FileDetailSchema = z
     truncated: z.boolean(),
   })
   .strict();
+
+// ---------------------------------------------------------------------------
+// Errors, Jobs & Watchlist
+// ---------------------------------------------------------------------------
+
 export const ApiErrorSchema = z
   .object({ code: z.string(), message: z.string(), retryable: z.boolean() })
   .strict();
+
 /** Stable adapter failure codes. Adapters may include these in internal typed errors. */
 export const IngestionErrorCodeSchema = z.enum([
   "INVALID_INPUT",
@@ -281,6 +322,7 @@ export const IngestionErrorCodeSchema = z.enum([
   "UPLOAD_NOT_FOUND",
   "CANCELLED",
 ]);
+
 export const AnalysisJobSchema = z
   .object({
     id: IdSchema,
@@ -305,6 +347,7 @@ export const AnalysisJobSchema = z
     if (job.status === "failed" && !job.error)
       fail("Failed job requires an error");
   });
+
 export const AnalysisSummarySchema = z
   .object({
     id: IdSchema,
@@ -315,6 +358,7 @@ export const AnalysisSummarySchema = z
     findingCount: z.number().int().nonnegative(),
   })
   .strict();
+
 export const WatchEntrySchema = z
   .object({
     id: IdSchema,
@@ -326,6 +370,11 @@ export const WatchEntrySchema = z
     lastError: ApiErrorSchema.nullable(),
   })
   .strict();
+
+// ---------------------------------------------------------------------------
+// Inferred TypeScript Types
+// ---------------------------------------------------------------------------
+
 export type AnalysisRequest = z.infer<typeof AnalysisRequestSchema>;
 export type AnalysisReport = z.infer<typeof AnalysisReportSchema>;
 export type SourceResolution = z.infer<typeof SourceResolutionSchema>;

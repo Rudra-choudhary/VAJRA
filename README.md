@@ -232,9 +232,10 @@ Vajra does not currently have built-in user sign-in or API access control. Treat
 
 ## More project notes
 
-- [Team PRD](VAJRA_TEAM_PRD.md)
+- [Team PRD](docs/VAJRA_TEAM_PRD.md)
+- [Design notes](docs/DESIGN.md)
 - [Engine notes](packages/engine/README.md)
 - [Shared contracts and adapter guidance](packages/contracts/README.md)
-- [Project roadmap](ROADMAP.md)
-- [Hackathon summary](HACKATHON.md)
+- [Project roadmap](docs/ROADMAP.md)
+- [Hackathon summary](docs/HACKATHON.md)
 
