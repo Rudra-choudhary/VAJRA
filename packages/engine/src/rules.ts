@@ -11,6 +11,10 @@ interface Signal {
   line: number;
   key: string;
 }
+/**
+ * Extracts static syntactic behavior signals (network, process execution,
+ * dynamic evaluation, sensitive path/env access) from a JS/TS source file.
+ */
 export function signals(text: string, path: string): Signal[] {
   const sf = ts.createSourceFile(
     path,
@@ -161,6 +165,10 @@ function object(v: unknown): Record<string, unknown> {
     ? (v as Record<string, unknown>)
     : {};
 }
+/**
+ * Evaluates deterministic packaging and security rules across compared files,
+ * returning bounded, deduplicated findings with verifiable evidence references.
+ */
 export function runRules(
   details: FileDetail[],
   source: SourceResolution,

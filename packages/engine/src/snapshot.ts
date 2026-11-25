@@ -8,6 +8,7 @@ import {
   type Limits,
 } from "@vajra/contracts";
 
+/** Default analysis safety limits enforced by the engine. */
 export const DEFAULT_LIMITS: Readonly<Limits> = Object.freeze({
   maxEntries: 10000,
   maxFindings: 1000,
@@ -18,6 +19,7 @@ export const DEFAULT_LIMITS: Readonly<Limits> = Object.freeze({
   maxDiffChars: 64000,
   maxModelOutputBytes: 64000,
 });
+/** Typed error thrown by the analysis engine with a stable machine-readable code. */
 export class EngineError extends Error {
   constructor(
     public readonly code: string,
@@ -28,10 +30,13 @@ export class EngineError extends Error {
     this.name = "EngineError";
   }
 }
+/** Computes a lowercase hex SHA-256 digest of a UTF-8 string. */
 export const digest = (s: string) =>
   createHash("sha256").update(s).digest("hex");
+/** Derives a deterministic, prefixed 24-hex-char identifier from an input string. */
 export const stableId = (prefix: string, s: string) =>
   `${prefix}_${digest(s).slice(0, 24)}`;
+/** Validates a snapshot's hash, entry count, logical paths, and uniqueness. */
 export function checkSnapshot(snapshot: Snapshot, limits: Limits): void {
   HashSchema.parse(snapshot.sha256);
   if (snapshot.entries.length > limits.maxEntries)
@@ -47,6 +52,7 @@ export function checkSnapshot(snapshot: Snapshot, limits: Limits): void {
     seen.add(e.path);
   }
 }
+/** Strips `root` from `path` if `path` resides inside `root`, otherwise returns null. */
 export function within(path: string, root: string): string | null {
   PackageRootSchema.parse(root);
   return root === ""
@@ -55,8 +61,14 @@ export function within(path: string, root: string): string | null {
       ? path.slice(root.length + 1)
       : null;
 }
+/** Joins a package root prefix and relative path. */
 export const joinRoot = (root: string, path: string) =>
   root ? `${root}/${path}` : path;
+/**
+ * Budget-enforced, caching text reader for Snapshot entries.
+ * Tracks total bytes read across all files and verifies SHA-256 integrity
+ * for non-truncated UTF-8 reads.
+ */
 export class ContentReader {
   private cache = new WeakMap<Snapshot, Map<string, TextContent>>();
   private used = 0;

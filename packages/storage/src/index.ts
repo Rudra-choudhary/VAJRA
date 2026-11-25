@@ -4,28 +4,70 @@ import { dirname } from "node:path";
 import type {
   AnalysisJob,
   AnalysisReport,
+  ApiError,
   FileDetail,
+  JobStatus,
+  Stage,
   WatchEntry,
 } from "@vajra/contracts";
 
+/** Persistence interface for Vajra jobs, reports, file details, and watchlist entries. */
 export interface Storage {
+  /** Insert or update an analysis job record. */
   saveJob(job: AnalysisJob): void;
+  /** Retrieve an analysis job by ID, or null if not found. */
   getJob(id: string): AnalysisJob | null;
+  /** List analysis jobs ordered newest-first with cursor pagination. */
   listJobs(
     limit: number,
     cursor: string | null,
   ): { items: AnalysisJob[]; nextCursor: string | null };
+  /** Persist a completed or partial analysis report. */
   saveReport(report: AnalysisReport): void;
+  /** Retrieve a report by ID, or null if not found. */
   getReport(id: string): AnalysisReport | null;
+  /** Persist a single file's text/diff detail for an analysis. */
   saveFileDetail(analysisId: string, fileId: string, detail: FileDetail): void;
+  /** Retrieve a file's text/diff detail, or null if not found. */
   getFileDetail(analysisId: string, fileId: string): FileDetail | null;
+  /** Return all entries in the package watchlist. */
   listWatch(): WatchEntry[];
+  /** Insert or update a watchlist entry and return it. */
   upsertWatch(entry: WatchEntry): WatchEntry;
+  /** Delete a watchlist entry by ID. */
   deleteWatch(id: string): void;
+  /** Retrieve a single watchlist entry by ID, or null if not found. */
   getWatch(id: string): WatchEntry | null;
+  /** Close the underlying SQLite database connection. */
   close(): void;
 }
 
+interface JobRow {
+  id: string;
+  status: JobStatus;
+  stage: Stage;
+  report: string | null;
+  error: string | null;
+}
+
+interface BodyRow {
+  body: string;
+}
+
+function hydrateJob(id: string, row: Omit<JobRow, "id">): AnalysisJob {
+  return {
+    id,
+    status: row.status,
+    stage: row.stage,
+    report: row.report ? (JSON.parse(row.report) as AnalysisReport) : undefined,
+    error: row.error ? (JSON.parse(row.error) as ApiError) : undefined,
+  };
+}
+
+/**
+ * Opens (or creates) a SQLite database at `dbPath`, initializes tables if
+ * needed, and returns a typed `Storage` repository.
+ */
 export function createStorage(dbPath: string): Storage {
   mkdirSync(dirname(dbPath), { recursive: true });
   const db = new DatabaseSync(dbPath);
@@ -73,44 +115,32 @@ export function createStorage(dbPath: string): Storage {
       );
     },
     getJob(id) {
-      const row = getJobStmt.get(id) as any;
-      if (!row) return null;
-      return {
-        id,
-        status: row.status,
-        stage: row.stage,
-        report: row.report ? JSON.parse(row.report) : undefined,
-        error: row.error ? JSON.parse(row.error) : undefined,
-      } as AnalysisJob;
+      const row = getJobStmt.get(id) as Omit<JobRow, "id"> | undefined;
+      return row ? hydrateJob(id, row) : null;
     },
     listJobs(limit, cursor) {
-      const rows = listJobsStmt.all(cursor, cursor, limit + 1) as any[];
-      const items = rows.slice(0, limit).map((r) => ({
-        id: r.id,
-        status: r.status,
-        stage: r.stage,
-        report: r.report ? JSON.parse(r.report) : undefined,
-        error: r.error ? JSON.parse(r.error) : undefined,
-      })) as AnalysisJob[];
-      const nextCursor = rows.length > limit ? rows[limit - 1].id : null;
+      const rows = listJobsStmt.all(cursor, cursor, limit + 1) as unknown as JobRow[];
+      const items = rows.slice(0, limit).map((r) => hydrateJob(r.id, r));
+      const nextCursor =
+        rows.length > limit && rows[limit - 1] ? rows[limit - 1]!.id : null;
       return { items, nextCursor };
     },
     saveReport(report) {
       insertReport.run(report.id, JSON.stringify(report));
     },
     getReport(id) {
-      const row = getReportStmt.get(id) as any;
+      const row = getReportStmt.get(id) as BodyRow | undefined;
       return row ? (JSON.parse(row.body) as AnalysisReport) : null;
     },
     saveFileDetail(analysisId, fileId, detail) {
       insertDetail.run(analysisId, fileId, JSON.stringify(detail));
     },
     getFileDetail(analysisId, fileId) {
-      const row = getDetailStmt.get(analysisId, fileId) as any;
+      const row = getDetailStmt.get(analysisId, fileId) as BodyRow | undefined;
       return row ? (JSON.parse(row.body) as FileDetail) : null;
     },
     listWatch() {
-      return (listWatchStmt.all() as any[]).map(
+      return (listWatchStmt.all() as unknown as BodyRow[]).map(
         (r) => JSON.parse(r.body) as WatchEntry,
       );
     },
@@ -122,7 +152,7 @@ export function createStorage(dbPath: string): Storage {
       deleteWatchStmt.run(id);
     },
     getWatch(id) {
-      const row = getWatchStmt.get(id) as any;
+      const row = getWatchStmt.get(id) as BodyRow | undefined;
       return row ? (JSON.parse(row.body) as WatchEntry) : null;
     },
     close() {

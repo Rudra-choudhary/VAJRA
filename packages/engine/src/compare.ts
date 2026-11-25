@@ -12,6 +12,11 @@ export interface Comparison {
   details: FileDetail[];
   relocations: Map<string, string>;
 }
+/**
+ * Matches files between an artifact snapshot and an optional source snapshot,
+ * detects identical/relocated/added/removed/modified/skipped files, and
+ * generates bounded unified diffs.
+ */
 export async function compare(
   artifact: ArtifactSnapshot,
   source: SourceSnapshot | null,

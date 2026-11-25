@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { readFile } from "node:fs/promises";
 import { parseArgs } from "node:util";
+import type { AnalysisJob } from "@vajra/contracts";
 
 const api = (process.env.VAJRA_API_URL ?? "http://127.0.0.1:3000").replace(
   /\/$/,
@@ -10,7 +11,9 @@ const [command, ...args] = process.argv.slice(2);
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${api}${path}`, init);
-  const body = (await response.json().catch(() => null)) as any;
+  const body = (await response.json().catch(() => null)) as {
+    error?: { message?: string };
+  } | null;
   if (!response.ok)
     throw new Error(body?.error?.message ?? `HTTP ${response.status}`);
   return body as T;
@@ -74,10 +77,10 @@ try {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ artifact, source }),
     });
-    let job: any;
+    let job: AnalysisJob;
     do {
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      job = await request<any>(
+      job = await request<AnalysisJob>(
         `/api/analyses/${encodeURIComponent(created.id)}`,
       );
       console.error(`${job.status}: ${job.stage}`);

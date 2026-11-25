@@ -226,14 +226,21 @@ export async function fetchNpmArtifact(
       5 * 1024 * 1024,
     );
 
-    let doc: any;
+    let docRaw: unknown;
     try {
-      doc = JSON.parse(metaBuf.toString("utf8"));
+      docRaw = JSON.parse(metaBuf.toString("utf8"));
     } catch {
       throw new IngestionError("INVALID_INPUT", "Registry response is not valid JSON");
     }
 
-    const dist = doc?.dist;
+    const doc =
+      docRaw !== null && typeof docRaw === "object" && !Array.isArray(docRaw)
+        ? (docRaw as Record<string, unknown>)
+        : {};
+    const dist =
+      doc.dist !== null && typeof doc.dist === "object" && !Array.isArray(doc.dist)
+        ? (doc.dist as Record<string, unknown>)
+        : undefined;
     const tarballUrl = dist?.tarball;
     const integrity = dist?.integrity;
 
@@ -279,9 +286,9 @@ export async function fetchNpmArtifact(
       );
     }
 
-    let manifest: any;
+    let manifestRaw: unknown;
     try {
-      manifest = JSON.parse(manifestBuf.toString("utf8"));
+      manifestRaw = JSON.parse(manifestBuf.toString("utf8"));
     } catch {
       throw new IngestionError(
         "INVALID_ARCHIVE",
@@ -289,10 +296,17 @@ export async function fetchNpmArtifact(
       );
     }
 
+    const manifest =
+      manifestRaw !== null &&
+      typeof manifestRaw === "object" &&
+      !Array.isArray(manifestRaw)
+        ? (manifestRaw as Record<string, unknown>)
+        : {};
+
     if (manifest.name !== input.name || manifest.version !== input.version) {
       throw new IngestionError(
         "INTEGRITY_MISMATCH",
-        `Archive manifest identity (${manifest.name}@${manifest.version}) does not match request (${input.name}@${input.version})`,
+        `Archive manifest identity (${String(manifest.name)}@${String(manifest.version)}) does not match request (${input.name}@${input.version})`,
       );
     }
 
@@ -311,11 +325,16 @@ export async function fetchNpmArtifact(
     const repo = doc.repository ?? manifest.repository;
     if (typeof repo === "string") {
       metadata.repository = { url: repo };
-    } else if (typeof repo === "object" && repo !== null && typeof repo.url === "string") {
-      metadata.repository = {
-        url: repo.url,
-        ...(typeof repo.directory === "string" ? { directory: repo.directory } : {}),
-      };
+    } else if (typeof repo === "object" && repo !== null) {
+      const repoObj = repo as Record<string, unknown>;
+      if (typeof repoObj.url === "string") {
+        metadata.repository = {
+          url: repoObj.url,
+          ...(typeof repoObj.directory === "string"
+            ? { directory: repoObj.directory }
+            : {}),
+        };
+      }
     }
 
     const root = files.has("package/package.json") ? "package" : "";

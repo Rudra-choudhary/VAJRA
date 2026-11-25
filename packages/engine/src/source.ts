@@ -76,6 +76,12 @@ async function packageRoot(
     );
   return matches[0]!;
 }
+/**
+ * Resolves the source snapshot for an analysis request (user upload, explicit
+ * GitHub commit, or automatic resolution via repository metadata / release tags).
+ * Never throws for unresolvable sources; instead returns `snapshot: null` with
+ * an `unresolved` resolution record and explanatory limitations.
+ */
 export async function resolveSource(
   request: AnalysisRequest,
   artifact: ArtifactSnapshot,

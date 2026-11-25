@@ -1,5 +1,6 @@
 import type { AnalysisReport } from "@vajra/contracts";
 
+/** Renders an `AnalysisReport` as a human-readable Markdown document. */
 export function renderMarkdown(report: AnalysisReport): string {
   const lines: string[] = [];
   lines.push(`# Vajra Analysis Report`);
@@ -47,6 +48,7 @@ export function renderMarkdown(report: AnalysisReport): string {
   return lines.join("\n");
 }
 
+/** Serializes an `AnalysisReport` as pretty-printed JSON. */
 export function renderJson(report: AnalysisReport): string {
   return JSON.stringify(report, null, 2);
 }
